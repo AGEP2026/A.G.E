@@ -67,6 +67,21 @@
             <option value="5-Intentos">5 Intentos</option>
         </select>
 
+        <label for="config-cierre-automatico">Cierre de sesión automático por inactividad:</label>
+        <select name="config-cierre-automatico" id="config-cierre-automatico">
+            <option value="15-min">15 Minutos</option>
+            <option value="30-min">30 Minutos</option>
+            <option value="1-hor" selected>1 Hora</option>
+        </select>
+
+        <label for="req-contra-config">Requerir cambio de contraseña cada:</label>
+        <select name="req-contra-config" id="req-contra-config">
+            <option value="30-dias">30 Días</option>
+            <option value="60-dias">60 Días</option>
+            <option value="90-dias">90 Días</option>
+            <option value="nunca" selected>Nunca</option>
+        </select>
+
 
 
         <button type="submit" class="resbutton">Guardar Cambios</button>
