@@ -859,7 +859,7 @@
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
     grid-column: 2/13;
-    margin: 100px 70px;
+    margin: 100px 80px -20px 80px;
     border-radius: 10px;
     overflow-x: auto;
     overflow-y: auto;
@@ -1649,7 +1649,7 @@
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
     grid-column: 2/13;
-    margin: 100px 70px;
+    margin: 100px 80px -20px 80px;
     border-radius: 10px;
     overflow-x: auto;
     overflow-y: auto;
@@ -2436,7 +2436,7 @@
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
     grid-column: 2/12;
-    margin: 100px 80px;
+    margin: 100px 80px -80px 80px;
     border-radius: 10px;
     overflow-x: auto;
     overflow-y: auto;

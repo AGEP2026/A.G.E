@@ -676,7 +676,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// Busca y muestra los clientes guardados para mantener la tabla sincronizada.
+// Buscar clientes.
 document.addEventListener("DOMContentLoaded", function () {
     const buscadorClientes = document.getElementById("buscador-clientes1");
     const cuerpoTabla = document.getElementById("clientes-body");
@@ -720,6 +720,51 @@ document.addEventListener("DOMContentLoaded", function () {
     buscadorClientes?.addEventListener("input", mostrarClientes);
     mostrarClientes();
 });
+
+// // Buscar empleados
+// document.addEventListener("DOMContentLoaded", function () {
+//     const buscadorClientes = document.getElementById("buscador-clientes1");
+//     const cuerpoTabla = document.getElementById("empleados-body");
+//     if (!cuerpoTabla) return;
+
+//     let empleados = [];
+//     try {
+//         const guardados = JSON.parse(localStorage.getItem("empleados")) || [];
+//         empleados = Array.isArray(guardados) ? guardados : [];
+//     } catch (error) {
+//         empleados = [];
+//     }
+
+//     function mostrarempleados() {
+//         const texto = buscadorClientes?.value.toLowerCase().trim() || "";
+//         cuerpoTabla.textContent = "";
+//         empleados.filter(empleados => `${empleados.nombre} ${empleados.telefono} ${empleados.ubicacion}`.toLowerCase().includes(texto))
+//             .forEach(empleados => {
+//                 const fila = document.createElement("tr");
+//                 [empleados.nombre, empleados.telefono, empleados.ubicacion].forEach(valor => {
+//                     const celda = document.createElement("th");
+//                     celda.textContent = valor || "";
+//                     fila.appendChild(celda);
+//                 });
+
+//                 const celdaAcciones = document.createElement("th");
+//                 const botonVer = document.createElement("button");
+//                 botonVer.className = "btn-ver";
+//                 const enlaceVer = document.createElement("a");
+//                 enlaceVer.href = `verEmpleado.html?id=${encodeURIComponent(cliente.id || "")}`;
+//                 const iconoVer = document.createElement("i");
+//                 iconoVer.className = "fa-regular fa-eye eye";
+//                 enlaceVer.appendChild(iconoVer);
+//                 botonVer.appendChild(enlaceVer);
+//                 celdaAcciones.appendChild(botonVer);
+//                 fila.appendChild(celdaAcciones);
+//                 cuerpoTabla.appendChild(fila);
+//             });
+//     }
+
+//     buscadorClientes?.addEventListener("input", mostrarempleados);
+//     mostrarempleados();
+// });
 
 // Anadir empleado 
 
