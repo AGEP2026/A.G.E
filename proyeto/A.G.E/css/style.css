@@ -4743,3 +4743,80 @@ select:focus {
   margin-top: 10px;
 }
 
+/* Prueba dark */
+
+body.activee {
+ background-color: #202124;
+}
+body.activee .tit {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .nav-Config {
+  background-color: #202124;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .nav-Config ul li a{
+  color: #fff;
+}
+
+body.activee .nav-Config .activo a {
+  background-color: #002180;
+}
+body.activee .nav-Config a:hover {
+  background-color: #000F42;
+}
+
+body.activee .contenido-config {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .contenido-config select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+body.activee .contenido-config select option {
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .contenido-config input {
+  background-color: #202124;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+body.activee .contenido-config input::placeholder {
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee .acercaDe {
+  background-color: #202124;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .acercaDe h1, h3, p {
+  color: #fff;
+}
+
+body.activee .acercaDe article h3 {
+  color: #fff;
+}
+
+body.activee .acercaDe article p {
+  color: #9EB8E6;
+}
+
+body.activee .config-principal {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}

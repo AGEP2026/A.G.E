@@ -1354,3 +1354,38 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// Modo oscuro para las paginas de configuracion
+const modo_oscuro = document.getElementById("tema");
+
+if(modo_oscuro) {
+modo_oscuro.addEventListener("change", () => {
+
+    if (modo_oscuro.value === "oscuro") {
+        document.body.classList.add("activee");
+        modo_oscuro.classList.add("activado");
+        localStorage.setItem("modo-oscuro", "true");
+    } else {
+        document.body.classList.remove("activee");
+        modo_oscuro.classList.remove("activado");
+        localStorage.setItem("modo-oscuro", "false");
+    }
+
+});
+}
+
+if (localStorage.getItem("modo-oscuro") === "true") {
+    document.body.classList.add("activee");
+
+    if (modo_oscuro) {
+        modo_oscuro.classList.add("activado");
+        modo_oscuro.value = "oscuro";
+    }
+
+} else {
+    document.body.classList.remove("activee");
+
+    if (modo_oscuro) {
+        modo_oscuro.classList.remove("activado");
+        modo_oscuro.value = "claro";
+    }
+}
