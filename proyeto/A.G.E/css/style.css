@@ -4803,7 +4803,9 @@ body.activee .acercaDe {
   box-shadow: 4px 5px 10px #000;
 }
 
-body.activee .acercaDe h1, h3, p {
+body.activee .acercaDe h1, 
+body.activee .acercaDe h2, 
+body.activee .acercaDe p {
   color: #fff;
 }
 
@@ -4819,4 +4821,393 @@ body.activee .config-principal {
   background-color: #202124;
   color: #fff;
   box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .buscador-inv {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .buscador-inv input{
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .buscador-inv input::placeholder{
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee .buscador-inv i{
+  color: #fff;
+}
+
+body.activee .encabezado {
+  color: #fff;
+}
+
+body.activee .encabezado i {
+  color: #fff;
+}
+
+body.activee .card, 
+body.activee .card-ES {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .seccion-productos .contenedor-productos {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .seccion-productos .contenedor-productos th{
+border-bottom: 1px solid #04040c;
+}
+
+body.activee .seccion-graficos .graficoES, 
+body.activee .seccion-graficos .graficoPPC{
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+
+body.activee .seccion-graficos .graficoES select, 
+body.activee .seccion-graficos .graficoPPC select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+body.activee .acciones .btn-verr i{
+  color: #fff;
+}
+
+body.activee .acciones .btn-editar i{
+  color: #fff;
+}
+body.activee .acciones .btn-eliminar i{
+  color: red;
+}
+body.activee .perfil-dash {
+  color: #fff;
+}
+body.activee .perfil-dash i{
+  color: #fff;
+}
+
+body.activee .perfil-dash a{
+  color: #fff;
+}
+
+body.activee .targetas form {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .buscar-cliente {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .buscar-cliente input{
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .buscar-cliente input::placeholder{
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee .buscar-cliente i{
+  color: #fff;
+}
+
+body.activee .contenedor-clientes {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .contenedor-clientes thead {
+  background-color: #888;
+}
+body.activee .tabla-clientes tbody tr:hover{
+  background: #04040c;
+}
+
+body.activee .historial-facturas {
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .historial-facturas div h2 {
+  color: #fff;
+}
+
+body.activee .historial-facturas div p{
+  color: #fff;
+}
+
+body.activee .historial-filtros label{
+  color: #fff;
+}
+
+body.activee .historial-filtros {
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .historial-filtros input{
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .historial-filtros input::placeholder{
+  background-color: #202124;
+  color: gray;
+
+}
+
+body.activee .historial-filtros select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .tabla-listas td {
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .historial-acciones {
+  background-color: gray;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .totales2 {
+  color: #fff;
+}
+
+body.activee .buscador button i {
+  color: #fff;
+}
+
+body.activee .historial-produccion div h2 {
+  color: #fff;
+}
+
+
+
+body.activee .historial-produccion label{
+  color: #fff;
+}
+
+body.activee .historial-produccion {
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .historial-produccion input{
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .historial-produccion input::placeholder{
+  background-color: #202124;
+  color: gray;
+
+}
+
+body.activee .historial-produccion select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .buscador{
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .buscador input{
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .buscador input::placeholder{
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee .buscador i{
+  color: #fff;
+}
+
+body.activee .contenido-estadisticas .graficoVG {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .contenido-estadisticas .graficoVG select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .contenido-estadisticas .graficoVPC {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .contenido-estadisticas .graficoVPC select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .contenido-estadisticas .graficoVPCA {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .contenido-estadisticas .graficoVPCA select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .contenido-estadisticas .notificaciones-estadisticas {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee .tarjeta-panel-clientes {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+
+
+body.activee .panel-clientes select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .panel-clientes h3 {
+  color: #fff;
+}
+
+body.activee .lista-clientes span{
+  color: #fff;
+}
+
+body.activee .tarjeta-metodos-pago {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+
+
+body.activee .header-metodos select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .header-metodos h3 {
+  color: #fff;
+}
+
+body.activee .lista-metodos span{
+  color: #fff;
+}
+
+body.activee .buscador-nf {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .buscador-nf input{
+  background-color: #202124;
+  color: #fff;
+}
+
+body.activee .buscador-nf input::placeholder{
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee .buscador-nf i{
+  color: #fff;
+}
+
+body.activee .encabezado-notificaciones div h1 {
+  color: #fff;
+}
+body.activee .encabezado-notificaciones div h1 i {
+  color: #fff;
+}
+
+
+body.activee .encabezado-notificaciones div p{
+  color: #fff;
+}
+
+body.activee .tarjeta-filtro {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .desplegable-filtro select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .tarjeta-grupo-hoy {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .contenido-notificacion h4,
+body.activee .contenido-notificacion .titulo-grupo {
+color: #fff;
+
+}
+
+body.activee .item-notificacion:hover {
+  background-color: #000F42;
 }
