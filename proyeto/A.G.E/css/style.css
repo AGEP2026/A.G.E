@@ -2427,21 +2427,23 @@
     margin: 0 25px 12px 0;
   }
 
-  /* -------------------------Clientes------------------------------------- */
+  /* -------------------------Empleados y Clientes ------------------------------------- */
 
-  .contenedor-clientes {
+.contenedor-clientes {
     background-color: #fff;
     border: 1px solid #ccc;
-    /* Seguir una sintaxis de las sombras  */
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
-    grid-column: 2/12;
-    margin: 100px 80px -80px 80px;
+    grid-column: 2 / 12;
+    margin: 100px 80px 20px 80px;
     border-radius: 10px;
-    overflow-x: auto;
-    overflow-y: auto;
     width: 100%;
-  }
+    height: fit-content;
+    min-height: 100px;
+    overflow: visible;
+    align-self: start;
+}
+
 
   .interaccion-cliente {
     border-bottom: 1px solid;
@@ -2574,6 +2576,16 @@
     border: 1px solid #ccc;
     box-shadow: 6px 8px 10px #ccc;
   }
+
+  .agregar-cliente #imagen-AniadirCliente:hover {
+    filter:brightness(50%);
+  }
+
+  /* #cambiarft{
+    grid-column: 10/12;
+    grid-row: 1;
+    max-width: 200px;
+  } */
 
  /* Agregar empleados */
   #area {
