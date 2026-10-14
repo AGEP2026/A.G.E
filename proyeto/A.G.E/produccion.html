@@ -29,7 +29,7 @@
                     <li class="seleccionadoNav"><a href="#"><i class="fa-solid fa-gears"></i>Producción</a></li>
                     <li><a href="estadisticasGenerales.html"><i class="fa-solid fa-chart-line"></i>Estadísticas</a></li>
                     <li><a href="notificaciones.html"><i class="fa-solid fa-bell"></i>Notificaciones</a></li>
-                </ul>
+                </ul> 
                 <p class="footerNav" style="color: #fff;">2026 A.G.E. Todos los derechos reservados.&#174;</p>
             </nav>
         </div>
@@ -43,21 +43,29 @@
             <a href="agregarOrden.html" class="btn-facturas"><i class="fa-solid fa-plus"></i> Nueva orden</a>
         </div>
 
-        <div class="produccion-filtros">
-            <label for="buscar-orden">Buscar orden o producto
-                <input type="search" id="buscar-orden" placeholder="Ej. SR-2026-0627">
+        <div class="historial-filtros">
+            <label for="buscar-factura">Buscar orden o producto
+                <input type="search" id="buscar-factura" placeholder="Ej. SR-2026-0627">
             </label>
-            <label for="estado-orden">Estado
-                <select id="estado-orden">
+            <label for="estado-factura">Estado
+                <select id="estado-factura">
                     <option value="">Todos los estados</option>
-                    <option value="Completada">Completada</option>
-                    <option value="En proceso">En proceso</option>
+                    <option value="pagada">Pagada</option>
                     <option value="Pendiente">Pendiente</option>
+                    <option value="Anulada">Anulada</option>
                 </select>
             </label>
+            <label for="fecha-factura">Desde
+                <input type="date" id="fecha-factura">
+            </label>
         </div>
-
-        <div class="tabla-listas tablaprod historial-produccion-tabla">
+        
+        <div class="resumen-historial">
+            <div><span>Órdenes emitidas</span><strong id="resumen-emitidas">0</strong></div>
+            <div><span>Pendientes / en proceso</span><strong id="resumen-pendientes">0</strong></div>
+            <div><span>Totales</span><strong id="resumen-total">$0.00</strong></div>
+        </div>
+        <div class="tabla-listas historial-tabla">
             <table>
                 <thead>
                     <tr class="superiorTabla">
@@ -70,38 +78,38 @@
                         <th><span class="textLista">Acciones</span></th>
                     </tr>
                 </thead>
-                <tbody id="historial-produccion-body">
-                    <tr data-estado="Completada">
+                <tbody id="historial-body">
+                    <tr data-estado="Pagada">
                         <td>SR-2026-0627</td><td>Champú</td><td>08/08/2026</td><td>Producción</td><td>$8,337.50</td>
-                        <td><span class="estado estado-completada">Completada</span></td>
-                        <td><a href="#" title="Ver orden"><i class="fa-regular fa-eye eye"></i></a> <a href="#" title="Descargar orden"><i class="fa-solid fa-download falista"></i></a></td>
-                    </tr>
-                    <tr data-estado="En proceso">
-                        <td>SR-2026-0628</td><td>Gel de ducha</td><td>07/08/2026</td><td>Producción</td><td>$6,420.00</td>
-                        <td><span class="estado estado-proceso">En proceso</span></td>
+                        <td><span class="estado estado-pagada">Pagada</span></td>
                         <td><a href="#" title="Ver orden"><i class="fa-regular fa-eye eye"></i></a> <a href="#" title="Descargar orden"><i class="fa-solid fa-download falista"></i></a></td>
                     </tr>
                     <tr data-estado="Pendiente">
+                        <td>SR-2026-0628</td><td>Gel de ducha</td><td>07/08/2026</td><td>Producción</td><td>$6,420.00</td>
+                        <td><span class="estado estado-pendiente">pendiente</span></td>
+                        <td><a href="#" title="Ver orden"><i class="fa-regular fa-eye eye"></i></a> <a href="#" title="Descargar orden"><i class="fa-solid fa-download falista"></i></a></td>
+                    </tr>
+                    <tr data-estado="Anulada">
                         <td>SR-2026-0629</td><td>Crema de afeitar</td><td>05/08/2026</td><td>Producción</td><td>$4,250.00</td>
-                        <td><span class="estado estado-pendiente">Pendiente</span></td>
+                        <td><span class="estado estado-anulada">Anulada</span></td>
                         <td><a href="#" title="Ver orden"><i class="fa-regular fa-eye eye"></i></a> <a href="#" title="Descargar orden"><i class="fa-solid fa-download falista"></i></a></td>
                     </tr>
                 </tbody>
             </table>
-            <p id="sin-resultados-produccion" class="sin-resultados" hidden>No hay órdenes que coincidan con los filtros.</p>
+            <p id="sin-resultados" class="sin-resultados" hidden>No hay órdenes que coincidan con los filtros.</p>
         </div>
 
-        <aside class="totales2">
+        <!-- <aside class="totales2">
             <h5>Órdenes registradas: <span class="num-totales">24</span></h5>
             <h5>Órdenes en proceso: <span class="num-totales">6</span></h5>
             <h5>COSTO TOTAL ESTIMADO: <span class="num-totales">$19,007.50</span></h5>
-        </aside>
+        </aside> -->
 
-        <div class="botonesfactura">
+        <!-- <div class="botonesfactura">
             <button id="cancelar-Orden" class="btn-facturas"><i class="fa-solid fa-xmark btn-prod"></i>Ver borradores</button>
             <a href="#" id="generar-Orden" class="btn-facturas"><i class="fa-solid fa-arrow-right btn-prod"></i>Generar
                 orden de producción</a>
-        </div>
+        </div> -->
         <div class="seccion-abajo historial-acciones">
             <button class="btn-factura">
             <a href="#" title="Importar orden">

@@ -888,12 +888,13 @@
   }
 
   .btn-aniado {
-    width: 200px;
+    /* width: 200px; */
     padding: 10px;
     grid-column: 5;
-    margin-left: 10px;
+    /* margin-left: 10px; */
     margin-top: -9px;
   }
+  
 
   .agregar-cliente label {
     grid-column: 1;
@@ -2801,7 +2802,7 @@
 }
 
 .facturagen input {
-  min-width: 250px;
+  min-width: 30%;
 }
 
 .btn-factura a,
@@ -3196,7 +3197,7 @@
 }
 
 .agregarfactura {
-  grid-column: 4 / 12;
+  grid-column: 4 / 12;  
   grid-row: 1 / 9;
   display: flex;
   flex-wrap: wrap;
@@ -3230,34 +3231,40 @@
 }
 
 .formulario {
-  width: 100%;
+  width: 80%;
   display: flex;
   flex-direction: column;
+  grid-column: 5 / 12;
+  grid-row: 1/12;
 }
 
 .formulario input {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.148);
-  background-color: #fff;
-  color: #000000;
   width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background-color: #ffffff;
   outline: none;
-  transition: all 0.1s ease-in-out;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .formulario input:focus {
   border-color: var(--colorBordesTargetas);
 }
 .formulario select {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.148);
-  background-color: #fff;
-  color: #000000;
   width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background-color: #ffffff;
   outline: none;
-  transition: all 0.1s ease-in-out;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .formulario select:focus {
@@ -3271,7 +3278,7 @@
 .opcionesF {
   display: flex;
   margin-bottom: 20px;
-  flex-direction: column;
+  /* flex-direction: column; */
   flex-wrap: wrap;
   align-items: flex-start;
 }
@@ -3294,6 +3301,11 @@
 .formulario div,
 label {
   margin-top: 20px;
+}
+
+
+.asterico {
+  color: #ff0000;
 }
 /* -------------------------------------------------------------------------------------------------------------------------------------- */
 /* Esto es donde sale el usuario y su nombre, junto con el botón de cerrar sesion */
@@ -5222,4 +5234,119 @@ color: #fff;
 
 body.activee .item-notificacion:hover {
   background-color: #000F42;
+}
+body.activee .agregar-cliente {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee #form-cliente, 
+body.activee #form-empleado {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+
+body.activee #form-cliente input,
+body.activee #form-empleado input{
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee #form-cliente input::placeholder,
+body.activee #form-empleado input::placeholder{
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee  #regresar-clientes{
+  color: #fff;
+}
+
+body.activee textarea{
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee textarea::placeholder{
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee #imagen-AniadirCliente {
+  box-shadow: 4px 5px 10px #000;
+}
+
+body.activee #agrecarcbotton,
+body.activee #limpiarclientebotton,
+body.activee .btn-aniado input {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+body.activee #agrecarcbotton:hover,
+body.activee #limpiarclientebotton:hover,
+body.activee .btn-aniado input:hover {
+  background: #000F42;
+  border: 1px solid #000F42;
+  box-shadow: 2px 3px 8px #000;
+}
+
+body.activee .agregarfactura,
+body.activee .agregar-producto {
+  background-color: #202124;
+  color: #fff;
+  box-shadow: 4px 5px 10px #000;
+  border: 1px solid #000;
+}
+body.activee .agregarfactura label,
+body.activee .agregar-producto label{
+  color: #fff;
+}
+
+body.activee .agregarfactura select,
+body.activee #form-empleado select {
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+body.activee .agregarfactura input,
+body.activee .agregar-producto input{
+  background-color: #202124;
+  color: #fff;
+  border: 1px solid #fff;
+    box-shadow: 4px 5px 10px #000;
+}
+
+body.activee .agregarfactura input::placeholder{
+  background-color: #202124;
+  color: gray;
+}
+
+body.activee .previewF,
+body.activee .factura-preview{
+  color: #fff;
+}
+
+body.activee .btn-aniadir:hover {
+ background-color: #00389E;
+ cursor: pointer;
+}
+
+body.activee .btn-cancelar {
+  background-color: #202124;
+  border: 1px solid #404040;
+  color: #C7C5C5;
+  transition: 0.2s;
+}
+
+body.activee .btn-cancelar:hover {
+  background-color: #404040;
+  color: #fff;
 }
