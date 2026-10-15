@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
+    <link rel="icon" href="{% static 'image/Logo_A.G.E.png' %}">
+</head>
+<body>
+<div class="contenedor-principal2">
+         <div class="login">
+            <form id="login-form" action="{% url 'dashboard' %}" method="post">
+                {% csrf_token %}
+            <label for="nombre">Usuario:</label>
+            <input type="text" name="username" id="nombre" autocomplete="username" autofocus placeholder="Usuario.." required>
+            <label for="password">Contraseña:</label>
+            <input type="password" name="password" id="password" autocomplete="off" placeholder="Contraseña" required>
+            <br><br>
+            <div class="creacuenta">
+                <a href="{% url 'register' %}" class="inicioreg">Crear cuenta</a>
+            </div>
+                <button type="submit" class="botonlog" >Iniciar sesión</button>
+            <div class="forgot">
+                <a href="{% url 'recuperarCuenta' %}" class="inicioreg">Olvidó su contraseña?</a>
+                <a href="{% url 'A_G_E' %}" class="inicioreg">regresar</a>
+            </div>
+            </form>
+        </div>
+        <div class="seccion-negra2">
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturación</title>
+    {% load static %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{% static 'script.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'image/Logo A.G.E.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div class="contenedor">
+    <h1 class="tit">Crear Factura</h1>
+    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+        <i class="fa-solid fa-bars menuoculto" style="background: transparent;"></i>
+    </button>
+    <aside id="navlateral" class="navlateral">
+        <div class="nav">
+            <nav>
+                <ul>
+                    <img src="{% static 'image/logo_fondo_negro.png' %}" alt="Logo de la empresa" class="logonav" width="100">
+                    <li><a href="{% url 'dashboard' %}"><i class="fa-solid fa-house" id="dashb"></i>Dashboard</a></li>
+                    <li><a href="{% url 'configuracion' %}"><i class="fa-solid fa-gear"></i>Configuración</a></li>
+                    <li><a href="{% url 'clientes' %}"><i class="fa-solid fa-people-group"></i>Clientes</a></li>
+                    <li class="seleccionadoNav"><a href="{% url 'facturacion' %}"><i class="fa-solid fa-file-invoice"></i>Facturación</a></li>
+                    <li><a href="{% url 'empleados' %}"><i class="fa-solid fa-user-group"></i>Empleados</a></li>
+                    <li><a href="{% url 'inventario' %}"><i class="fa-solid fa-boxes-stacked"></i>Inventario</a></li>
+                    <li><a href="{% url 'produccion' %}"><i class="fa-solid fa-gears"></i>Producción</a></li>
+                    <li><a href="{% url 'estadisticas' %}"><i class="fa-solid fa-chart-line"></i>Estadísticas</a></li>
+                    <li><a href="{% url 'notificaciones' %}"><i class="fa-solid fa-bell"></i>Notificaciones</a></li>
+                </ul>
+                <p class="footerNav" style="color: #fff;">2026 A.G.E. Todos los derechos reservados.&#174;</p>
+            </nav>
+        </div>
+     </aside>
+     <div class="formulario">
+        <div class="agregarfactura">
+            <label for="tipo-factura" class="textoF">Tipo de Factura <span class="asterico">*</span>
+            </label>
+            <select id="tipo-factura" style="margin-top: 15px; margin-bottom: -15px;">
+                <option value="normal">Factura Normal</option>
+                <option value="credito">Factura de Crédito Fiscal</option>
+            </select>
+            <div class="opcionesF">
+            <label for="cliente-nombre">Nombre del Cliente <span class="asterico">*</span></label>
+            <input type="text" id="cliente-nombre" required placeholder="Nombre del cliente">
+            <label for="cliente-rfc">RNC <span class="asterico">*</span></label>
+            <input type="text" id="cliente-rfc" required placeholder="Ej: 4-01-01006-2">
+            <label for="fact-metodo-pago">Método de pago <span class="asterico">*</span></label>
+            <select id="fact-metodo-pago" required>
+                <option value="">Selecciona un método de pago</option>
+                <option value="tarjeta">Tarjeta de crédito</option>
+                <option value="transferencia">Transferencia bancaria</option>
+                <option value="efectivo">Efectivo</option>
+                <option value="digital">Billeteras digitales</option>
+            </select>
+            <label for="fact-estado">Estado de pago</label>
+            <select id="fact-estado">
+                <option value="Pendiente">Pendiente</option>
+                <option value="Pagada">Pagada</option>
+            </select>
+            <label for="tasa-interes">Tasa de Interés <span class="asterico">%</span></label>
+            <input type="number" id="tasa-interes" min="0" step="0.01" placeholder="0.00">
+
+            <label for="fact-producto">Producto <span class="asterico">*</span></label>
+            <select id="fact-producto">
+                <option value="">Selecciona un producto</option>
+            </select>
+            <label for="fact-producto-manual">O escribe el producto</label>
+            <input type="text" id="fact-producto-manual" placeholder="Nombre del producto">
+
+            <label for="fact-cantidad">Cantidad <span class="asterico">*</span></label>
+            <input type="number" id="fact-cantidad" min="1" placeholder="1">
+            <label for="fact-precio">Precio unitario <span class="asterico">*</span></label>
+            <input type="number" id="fact-precio" min="0" step="0.01" placeholder="0.00">
+    </div>
+    <div class="btn-aniado facturagen">
+        <a href="#" id="fact-agregar-item"><input type="button" value="Agregar a Factura"></a>
+    </div>
+        <h3>Detalle de Factura</h3>
+
+        <div class="items-carrito" id="factura-items">
+            <div>Sin productos aún</div>
+        </div>
+
+        <div class="resumen-venta">
+            <div class="resumen-fila">
+                <span>Subtotal:</span>
+                <span id="fact-subtotal">$0.00</span>
+            </div>
+            <div class="resumen-fila">
+                <span>IVA (16%):</span>
+                <span id="fact-iva">$0.00</span>
+            </div>
+            <div id="interes-container" style="display: none;">
+                <div class="resumen-fila">
+                    <span>Interés:</span>
+                    <span id="fact-interes">$0.00</span>
+                </div>
+            </div>
+            <div class="resumen-fila total">
+                <span>TOTAL:</span>
+                <span id="fact-total">$0.00</span>
+            </div>
+        </div>
+
+        <div class="btn-aniado crearfactura-btn">
+            <a href="#" id="fact-generar"><input type="button" value="Generar Factura" style="width: 120px;"></a>
+            <a href="#" id="fact-limpiar"><input type="button" value="Limpiar" style="width: 120px;"></a>
+        </div>
+
+        <div>
+            <h3 class="previewF">Vista Previa de Factura</h3>
+            <div class="factura-preview">
+                <div>La factura aparecerá aquí</div>
+            </div>
+            <div class="btn-aniado">
+                <a href="#" id="fact-imprimir"><input type="button" value="Generar PDF" ></a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

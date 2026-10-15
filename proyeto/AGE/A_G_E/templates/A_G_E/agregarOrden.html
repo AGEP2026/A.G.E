@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva orden de producción</title>
+    {% load static %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{% static 'script.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'image/Logo A.G.E.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body data-produccion-url="{% url 'produccion' %}">
+<div class="contenedor">
+    <h1 class="tit">Nueva orden de producción</h1>
+    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+        <i class="fa-solid fa-bars menuoculto" style="background: transparent;"></i>
+    </button>
+    <aside id="navlateral" class="navlateral">
+        <div class="nav">
+            <nav>
+                <ul>
+                    <img src="{% static 'image/logo_fondo_negro.png' %}" alt="Logo de la empresa" class="logonav" width="100">
+                    <li><a href="{% url 'dashboard' %}"><i class="fa-solid fa-house" id="dashb"></i>Dashboard</a></li>
+                    <li><a href="{% url 'configuracion' %}"><i class="fa-solid fa-gear"></i>Configuración</a></li>
+                    <li><a href="{% url 'clientes' %}"><i class="fa-solid fa-people-group"></i>Clientes</a></li>
+                    <li><a href="{% url 'facturacion' %}"><i class="fa-solid fa-file-invoice"></i>Facturación</a></li>
+                    <li><a href="{% url 'empleados' %}"><i class="fa-solid fa-user-group"></i>Empleados</a></li>
+                    <li><a href="{% url 'inventario' %}"><i class="fa-solid fa-boxes-stacked"></i>Inventario</a></li>
+                    <li class="seleccionadoNav"><a href="{% url 'produccion' %}"><i class="fa-solid fa-gears"></i>Producción</a></li>
+                    <li><a href="{% url 'estadisticas' %}"><i class="fa-solid fa-chart-line"></i>Estadísticas</a></li>
+                    <li><a href="{% url 'notificaciones' %}"><i class="fa-solid fa-bell"></i>Notificaciones</a></li>
+                </ul>
+                <p class="footerNav" style="color: #fff;">2026 A.G.E. Todos los derechos reservados.&#174;</p>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="formulario">
+        <section class="agregarfactura">
+            <div class="opcionesF">
+                <label for="orden-responsable">Responsable *</label>
+                <input type="text" id="orden-responsable" required placeholder="Área o persona responsable">
+
+                <label for="orden-producto">Producto *</label>
+                <input type="text" id="orden-producto" placeholder="Nombre del producto">
+
+                <label for="orden-cantidad">Cantidad a producir *</label>
+                <input type="number" id="orden-cantidad" min="1" step="1" placeholder="1">
+
+                <label for="orden-costo-unitario">Costo estimado por unidad *</label>
+                <input type="number" id="orden-costo-unitario" min="0" step="0.01" placeholder="0.00">
+
+                <label for="orden-horas">Horas estimadas de trabajo</label>
+                <input type="number" id="orden-horas" min="0" step="0.5" placeholder="0">
+
+                <label for="orden-estado">Estado inicial</label>
+                <select id="orden-estado">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En proceso">En proceso</option>
+                </select>
+            </div>
+
+            <div class="btn-aniado facturagen">
+                <a href="#" id="orden-agregar-item"><input type="button" value="Agregar a la Orden"></a>
+            </div>
+
+            <h3>Detalle de la orden</h3>
+            <div class="items-carrito" id="orden-items">
+                <div>Agrega al menos un producto</div>
+            </div>
+
+            <div class="resumen-venta">
+                <div class="resumen-fila">
+                    <span>Horas estimadas:</span>
+                    <span id="orden-total-horas">0</span>
+                </div>
+                <div class="resumen-fila total">
+                    <span>Costo estimado total:</span>
+                    <span id="orden-total-costo">RD$ 0.00</span>
+                </div>
+            </div>
+
+            <div class="factura-preview" id="orden-preview">
+                La orden aparecerá aquí después de crearla.
+            </div>
+
+            <div class="btn-aniado crearfactura-btn">
+                <a href="#" id="orden-generar"><input type="button" value="Generar Orden" style="width: 120px;"></a>
+                <a href="#" id="orden-limpiar"><input type="button" value="Limpiar" style="width: 120px;"></a>
+            </div>
+
+            <div class="btn-aniado">
+                <a href="#" id="orden-pdf"><input type="button" value="Generar PDF"></a>
+            </div>
+
+            <a href="{% url 'produccion' %}" id="regresar-produccion">Volver a producción</a>
+        </section>
+    </main>
+</div>
+</body>
+</html>

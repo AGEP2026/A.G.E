@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producción</title>
+    {% load static %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
+    <link rel="icon" href="{% static 'image/Logo A.G.E.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div class="contenedor">
+    <h1 class="tit">Producción</h1>
+    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+        <i class="fa-solid fa-bars menuoculto" style="background: transparent;"></i>
+    </button>
+    <aside id="navlateral" class="navlateral">
+        <div class="nav">
+            <nav>
+                <ul>
+                    <img src="{% static 'image/logo_fondo_negro.png' %}" alt="Logo de la empresa" class="logonav" width="100">
+                    <li><a href="{% url 'dashboard' %}"><i class="fa-solid fa-house" id="dashb"></i>Dashboard</a></li>
+                    <li><a href="{% url 'configuracion' %}"><i class="fa-solid fa-gear"></i>Configuración</a></li>
+                    <li><a href="{% url 'clientes' %}"><i class="fa-solid fa-people-group"></i>Clientes</a></li>
+                    <li><a href="{% url 'facturacion' %}"><i class="fa-solid fa-file-invoice"></i>Facturación</a></li>
+                    <li><a href="{% url 'empleados' %}"><i class="fa-solid fa-user-group"></i>Empleados</a></li>
+                    <li><a href="{% url 'inventario' %}"><i class="fa-solid fa-boxes-stacked"></i>Inventario</a></li>
+                    <li class="seleccionadoNav"><a href="{% url 'produccion' %}"><i class="fa-solid fa-gears"></i>Producción</a></li>
+                    <li><a href="{% url 'estadisticas' %}"><i class="fa-solid fa-chart-line"></i>Estadísticas</a></li>
+                    <li><a href="{% url 'notificaciones' %}"><i class="fa-solid fa-bell"></i>Notificaciones</a></li>
+                </ul>
+                <p class="footerNav" style="color: #fff;">2026 A.G.E. Todos los derechos reservados.&#174;</p>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="historial-facturas historial-produccion">
+        <div class="produccion-encabezado">
+            <div>
+                <h2>Órdenes de producción</h2>
+                <p>Consulta, crea y actualiza tus órdenes de producción.</p>
+            </div>
+            <a href="{% url 'agregar_orden' %}" class="btn-facturas"><i class="fa-solid fa-plus"></i> Nueva orden</a>
+        </div>
+
+        <div class="historial-filtros produccion-filtros">
+            <label for="buscar-orden">Buscar orden o producto
+                <input type="search" id="buscar-orden" placeholder="Ej. OP-0001 o champú">
+            </label>
+            <label for="estado-orden">Estado
+                <select id="estado-orden">
+                    <option value="">Todos los estados</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Completada">Completada</option>
+                    <option value="Anulada">Anulada</option>
+                </select>
+            </label>
+            <label for="fecha-orden">Desde
+                <input type="date" id="fecha-orden">
+            </label>
+        </div>
+
+        <div class="resumen-historial">
+            <div><span>Órdenes creadas</span><strong id="resumen-ordenes">0</strong></div>
+            <div><span>Pendientes / en proceso</span><strong id="resumen-ordenes-pendientes">0</strong></div>
+            <div><span>Costo estimado</span><strong id="resumen-costo-produccion">RD$ 0.00</strong></div>
+        </div>
+
+        <div class="tabla-listas historial-tabla historial-produccion-tabla">
+            <table>
+                <thead>
+                    <tr class="superiorTabla">
+                        <th>Orden No.</th>
+                        <th>Producto(s)</th>
+                        <th>Fecha</th>
+                        <th>Responsable</th>
+                        <th>Costo estimado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="historial-produccion-body"></tbody>
+            </table>
+            <p id="sin-resultados-produccion" class="sin-resultados" hidden>No hay órdenes que coincidan con los filtros.</p>
+        </div>
+
+        <div class="seccion-abajo historial-acciones">
+            <button type="button" class="btn-factura" id="pdf-ordenes" title="Generar PDF de órdenes" aria-label="Generar PDF de órdenes">
+                <i class="fa-regular fa-file-pdf fatodo"></i>
+            </button>
+            <button type="button" class="btn-factura" id="exportar-ordenes" title="Exportar órdenes" aria-label="Exportar órdenes">
+                <i class="fa-solid fa-file-export fatodo"></i>
+            </button>
+            <label class="btn-factura" for="importar-ordenes" title="Importar órdenes" aria-label="Importar órdenes">
+                <i class="fa-solid fa-file-import fatodo"></i>
+            </label>
+            <input type="file" id="importar-ordenes" accept="application/json,.json" hidden>
+            <button type="button" class="btn-factura" id="guardar-ordenes" title="Guardar órdenes" aria-label="Guardar órdenes">
+                <i class="fa-regular fa-floppy-disk fatodo"></i>
+            </button>
+            <a href="{% url 'agregar_orden' %}" class="btn-factura" title="Crear una orden" aria-label="Crear una orden">
+                <i class="fa-solid fa-file-circle-plus fatodo"></i>
+            </a>
+        </div>
+    </main>
+</div>
+</body>
+</html>
