@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
+
+    
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+    <link rel="icon" href="./image/Logo A.G.E.png">
+</head>
+<body>
+<div class="contenedor-principal2">
+         <div class="login">
+            <form id="login-form" action="{% url 'dashboard' %}" method="get">
+            <label for="nombre">Usuario:</label>
+            <input type="text" name="log" id="nombre" autocomplete="off" autofocus placeholder="Usuario.." required>
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" name="log" id="constraseña" autocomplete="off" placeholder="Contraseña" required>
+            <br><br>
+            <div class="creacuenta">
+                <a href="{% url 'register' %}" class="inicioreg">Crear cuenta</a>
+            </div>
+                <button type="submit" class="botonlog" >Iniciar sesión</button>
+            <div class="forgot">
+                <a href="{% url 'recuperarCuenta' %}" class="inicioreg">Olvidó su contraseña?</a>
+                <a href="{% url 'A_G_E' %}" class="inicioreg">regresar</a>
+            </div>
+            </form>
+        </div>
+        <div class="seccion-negra2">
+    </div>
+</div>
+</body>
+</html>
