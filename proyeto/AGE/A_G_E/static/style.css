@@ -106,7 +106,7 @@
 .seccion-derecha {
   flex: 1;
   height: 100%;
-  background: wheat url(../image/principal.jpg);
+  /* background: wheat url(../image/principal.jpg); */
   margin-left: -180px;
 }
 /* el logo AGE, los estilos */
