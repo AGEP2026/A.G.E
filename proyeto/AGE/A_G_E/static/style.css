@@ -247,14 +247,11 @@
     /* display: none; */
     transition: all 0.3s ease-in-out;
     overflow-y: auto;
-    overflow-x: auto;
   }
 
   .fa-bars {
     cursor: pointer;
     grid-column: 3;
-    margin-left: 20px;
-    margin-top: 10px;
   }
 
   .logonav {
@@ -1029,11 +1026,13 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    margin-top: 5px;
-    margin-left: 5px;
     z-index: 6;
     position: fixed;
     color: #fff;
+    display: block;
+    line-height: 50px;
+    height: 50px;
+    width: 68px;
   }
   #toggleBtn2{
     background: transparent;

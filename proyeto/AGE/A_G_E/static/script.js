@@ -1132,7 +1132,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             localStorage.setItem("sesionAGE", "activa");
 
-            window.location.href = document.body.dataset.dashboardUrl;
+            window.location.href = "dashboard.html";
         });
     }
 
