@@ -1434,50 +1434,6 @@ document.addEventListener("DOMContentLoaded", function () {
     mostrarClientes();
 });
 
-// // Buscar empleados
-// document.addEventListener("DOMContentLoaded", function () {
-//     const buscadorClientes = document.getElementById("buscador-clientes1");
-//     const cuerpoTabla = document.getElementById("empleados-body");
-//     if (!cuerpoTabla) return;
-
-//     let empleados = [];
-//     try {
-//         const guardados = JSON.parse(localStorage.getItem("empleados")) || [];
-//         empleados = Array.isArray(guardados) ? guardados : [];
-//     } catch (error) {
-//         empleados = [];
-//     }
-
-//     function mostrarempleados() {
-//         const texto = buscadorClientes?.value.toLowerCase().trim() || "";
-//         cuerpoTabla.textContent = "";
-//         empleados.filter(empleados => `${empleados.nombre} ${empleados.telefono} ${empleados.ubicacion}`.toLowerCase().includes(texto))
-//             .forEach(empleados => {
-//                 const fila = document.createElement("tr");
-//                 [empleados.nombre, empleados.telefono, empleados.ubicacion].forEach(valor => {
-//                     const celda = document.createElement("th");
-//                     celda.textContent = valor || "";
-//                     fila.appendChild(celda);
-//                 });
-
-//                 const celdaAcciones = document.createElement("th");
-//                 const botonVer = document.createElement("button");
-//                 botonVer.className = "btn-ver";
-//                 const enlaceVer = document.createElement("a");
-//                 enlaceVer.href = `verEmpleado.html?id=${encodeURIComponent(cliente.id || "")}`;
-//                 const iconoVer = document.createElement("i");
-//                 iconoVer.className = "fa-regular fa-eye eye";
-//                 enlaceVer.appendChild(iconoVer);
-//                 botonVer.appendChild(enlaceVer);
-//                 celdaAcciones.appendChild(botonVer);
-//                 fila.appendChild(celdaAcciones);
-//                 cuerpoTabla.appendChild(fila);
-//             });
-//     }
-
-//     buscadorClientes?.addEventListener("input", mostrarempleados);
-//     mostrarempleados();
-// });
 
 // Anadir empleado 
 
@@ -1508,7 +1464,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Obtener empleados guardados
         let empleados = [];
         try {
-            const guardados = JSON.parse(localStorage.getItem("empleados")) || [];
+            const guardados = JSON.parse(localStorage.getItemById("empleados")) || [];
             empleados = Array.isArray(guardados) ? guardados : [];
         } catch (error) {
             empleados = [];
@@ -1532,12 +1488,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Guardar nuevamente
         localStorage.setItem("empleados", JSON.stringify(empleados));
-        registrarNotificacion("empleados", "Empleado agregado", `${nombre} fue agregado al sistema.`);
 
         alert("Empleado agregado correctamente");
 
         // Ir a la página de empleados
-        window.location.href =document.body.dataset.empleadosUrl;
+        window.location.href = document.body.dataset.empleadosUrl;
     });
 
 });

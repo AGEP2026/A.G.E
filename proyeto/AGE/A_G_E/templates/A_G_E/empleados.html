@@ -36,9 +36,9 @@
         </div>
     </aside>
 
-    <div class="interaccion-cliente">
+   <div class="interaccion-cliente">
         <div class="buscar-cliente">
-            <input type="search" placeholder="Buscar cliente"  id="buscador-clientes1">
+            <input type="search" placeholder="Buscar empleado" id="buscador-clientes1">
             <button>
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
@@ -47,7 +47,7 @@
             <a href="{% url 'aempleado' %}"><input type="button" value="Añadir"></a>
         </div>
     </div>
-
+        
     <div class="contenedor-clientes">
        
         <!-- Tabla de Empleados -->
@@ -58,7 +58,6 @@
                 <th>ID</th>
                 <th>Area</th>
                 <th>Estado</th> 
-                <th></th>
             </thead>
             <tbody id="empleados-body">
             </tbody>
