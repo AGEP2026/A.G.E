@@ -1497,6 +1497,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+// Mostrar los empleados guardados en la tabla.
+document.addEventListener("DOMContentLoaded", function () {
+    const buscadorEmpleados = document.getElementById("buscador-clientes1");
+    const cuerpoTabla = document.getElementById("empleados-body");
+    if (!cuerpoTabla) return;
+
+    let empleados = [];
+    try {
+        const guardados = JSON.parse(localStorage.getItem("empleados")) || [];
+        empleados = Array.isArray(guardados) ? guardados : [];
+    } catch (error) {
+        empleados = [];
+    }
+
+    function mostrarEmpleados() {
+        const texto = buscadorEmpleados?.value.toLowerCase().trim() || "";
+        cuerpoTabla.textContent = "";
+        empleados
+            .filter(empleado => empleado && `${empleado.nombre} ${empleado.id} ${empleado.area} ${empleado.estado}`.toLowerCase().includes(texto))
+            .forEach(empleado => {
+                const fila = document.createElement("tr");
+                [empleado.nombre, empleado.id, empleado.area, empleado.estado].forEach(valor => {
+                    const celda = document.createElement("th");
+                    celda.textContent = valor || "";
+                    fila.appendChild(celda);
+                });
+                cuerpoTabla.appendChild(fila);
+            });
+    }
+
+    buscadorEmpleados?.addEventListener("input", mostrarEmpleados);
+    mostrarEmpleados();
+});
+
 // Anadir Clientes
 document.addEventListener("DOMContentLoaded", function () {
 
