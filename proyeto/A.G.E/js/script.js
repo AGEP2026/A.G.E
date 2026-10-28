@@ -1389,3 +1389,106 @@ if (localStorage.getItem("modo-oscuro") === "true") {
         modo_oscuro.value = "claro";
     }
 }
+
+
+// ------------------ Gráficas ----------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  const canvasES = document.getElementById("graficoES");
+  if (!canvasES) return;
+
+  const ctx = canvasES.getContext("2d");
+
+  const graficoES = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+      datasets: [
+        {
+          label: "Entradas",
+          data: [5, 12, 8, 15, 20, 7, 14, 9, 18, 11],
+          backgroundColor: "rgba(34, 197, 94, 0.75)",
+          borderColor: "rgba(34, 197, 94, 1)",
+          borderWidth: 1,
+          borderRadius: 4
+        },
+        {
+          label: "Salidas",
+          data: [3, 8, 4, 10, 12, 5, 9, 6, 12, 7],
+          backgroundColor: "rgba(239, 68, 68, 0.75)",
+          borderColor: "rgba(239, 68, 68, 1)",
+          borderWidth: 1,
+          borderRadius: 4
+        }
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: false,
+        },
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: true
+        }
+      }
+    },
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const canvasPPC = document.getElementById("graficoPPC");
+  if (!canvasPPC) return;
+
+  const ctxPPC = canvasPPC.getContext("2d");
+
+  const graficoPPC = new Chart(ctxPPC, {
+    type: "doughnut", // Tipo dona
+    data: {
+      labels: ["Electrónica", "Ropa", "Alimentos", "Hogar", "Otros"],
+      datasets: [
+        {
+          label: "Productos por Categoría",
+          data: [35, 25, 20, 12, 8],
+          backgroundColor: [
+            "rgba(59, 130, 246, 0.75)", 
+            "rgba(16, 185, 129, 0.75)", 
+            "rgba(245, 158, 11, 0.75)", 
+            "rgba(139, 92, 246, 0.75)", 
+            "rgba(100, 116, 139, 0.75)", 
+          ],
+          borderColor: [
+            "rgba(59, 130, 246, 1)",
+            "rgba(16, 185, 129, 1)",
+            "rgba(245, 158, 11, 1)",
+            "rgba(139, 92, 246, 1)",
+            "rgba(100, 116, 139, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Mantiene el diseño controlado dentro de la tarjeta
+      plugins: {
+        legend: {
+          position: "bottom", 
+        },
+        title: {
+          display: false,
+        },
+      },
+    },
+  });
+});
