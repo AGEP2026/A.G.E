@@ -1064,9 +1064,9 @@ function abri() {
         navlateral.classList.toggle('open');
         
         if (navlateral.classList.contains('open')) {
-            iconoBtn.style.color = '#000';
-        } else {
             iconoBtn.style.color = '#fff';
+        } else {
+            iconoBtn.style.color = '#000';
         }
     });
 } 

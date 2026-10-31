@@ -13,14 +13,18 @@
 <body>
 <div class="contenedor asd">
     <h1 class="tit">Dashboard</h1>
-        <div class="perfil-dash">
-            <img src="" alt=""><i class="fa-regular fa-user"></i>
-            <h4>Usuario: <h6 id="usuario-dashboard">Mi mismo</h6></h4>
-            <a href="{% url 'login' %}">Cerrar Sesion</a>
-        </div>
-        <button id="toggleBtn" onfocus="abri()" onblur="abri()">
-        <i class="fa-solid fa-bars menuoculto" style="background: transparent;"></i>
+    
+    <div class="perfil-dash">
+        <img src="" alt=""><i class="fa-regular fa-user"></i>
+        <h4>Usuario: <h6 id="usuario-dashboard">Mi mismo</h6></h4>
+        <a href="{% url 'login' %}">Cerrar Sesion</a>
+    </div>
+
+    <button id="toggleBtn" onclick="abri()" onblur="abri()">
+        <i class="fa-solid fa-bars menuoculto" style="background: transparent; color: #000;"></i>
     </button>
+    
+    <!-- Navegación intacta -->
     <aside id="navlateral" class="navlateral">
         <div class="nav">
             <nav>
@@ -41,50 +45,106 @@
         </div>
     </aside>
 
-        <div class="targetas">
-            <form  action="" method="" class="targ">
-                <h2 class="tittarge">Facturación</h2>
-                <h5 class="targe">Generar facturas Electrónicas</h5>
-                <div class="botonver">
-                <a href="{% url 'facturacion' %}" class="targe">Ver</a>
-                </div>
-            </form>
-            <form  action="" method="" class="targ">
-                <h2 class="tittarge">Inventario</h2>
-                <h5 class="targe">Control y gestión de productos</h5>
-                <div class="botonver">
-                <a href="{% url 'inventario' %}" class="targe">Ver</a>
-                </div>
-            </form>
-            <form  action="" method="" class="targ">
-                <h2 class="tittarge">Producción</h2>
-                <h5 class="targe">Control y Gestión de producción</h5>
-                <div class="botonver">
-                <a href="{% url 'produccion' %}" class="targe">Ver</a>
-                </div>    
-            </form>
-            <form  action="" method="" class="targ">
-                <h2 class="tittarge">Estadísticas</h2>
-                <h5 class="targe">Gestionar ventas y visualizar facturas</h5>
-                <div class="botonver">
-                <a href="{% url 'estadisticas' %}" class="targe">Ver</a>
-                </div>
-            </form>
-            <form  action="" method="" class="targ">
-                <h2 class="tittarge">Personal</h2>
-                <h5 class="targe">Administrar empleados y asignaciones</h5>
-                <div class="botonver">
-                <a href="{% url 'empleados' %}" class="targe">Ver</a>
-                </div>
-            </form>
-            <form  action="" method="" class="targ">
-                <h2 class="tittarge">Clientes</h2>
-                <h5 class="targe">Gestionar clientes y ubicaciones</h5>
-                <div class="botonver">
-                <a href="{% url 'clientes' %}" class="targe">Ver</a>
-                </div>
-            </form>
+    <!-- Contenido Principal del Dashboard -->
+    <main class="dashboard-main-content">
+        
+        <!-- Mensaje de Bienvenida -->
+        <div class="bienvenida-banner">
+            <h2>Resumen General</h2>
+            <p>Estado del sistema e indicadores clave del negocio.</p>
         </div>
+
+        <!-- Tarjetas de Resumen Rápido (KPIs) -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon blue"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <div class="kpi-detalles">
+                    <span>Facturas del Mes</span>
+                    <h3>$0.00</h3>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon green"><i class="fa-solid fa-boxes-stacked"></i></div>
+                <div class="kpi-detalles">
+                    <span>Stock Disponible</span>
+                    <h3>0 items</h3>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon orange"><i class="fa-solid fa-gears"></i></div>
+                <div class="kpi-detalles">
+                    <span>Órdenes Producción</span>
+                    <h3>0 activas</h3>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon purple"><i class="fa-solid fa-people-group"></i></div>
+                <div class="kpi-detalles">
+                    <span>Clientes Activos</span>
+                    <h3>0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accesos directos a Módulos principales -->
+        <h2 class="subtitulo-seccion"><i class="fa-solid fa-border-all"></i> Accesos Rápidos</h2>
+        <div class="targetas">
+            <a href="{% url 'facturacion' %}" class="targe">
+                <div class="targ-header">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <h2 class="tittarge">Facturación</h2>
+                </div>
+                <h5 class="target">Generar facturas electrónicas y gestionar cobros</h5>
+                <span class="btn-acceso">Ingresar <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+
+            <a href="{% url 'inventario' %}" class="targe">
+                <div class="targ-header">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <h2 class="tittarge">Inventario</h2>
+                </div>
+                <h5 class="target">Control, existencias y gestión de productos</h5>
+                <span class="btn-acceso">Ingresar <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+
+            <a href="{% url 'produccion' %}" class="targe">
+                <div class="targ-header">
+                    <i class="fa-solid fa-gears"></i>
+                    <h2 class="tittarge">Producción</h2>
+                </div>
+                <h5 class="target">Control y seguimiento de líneas de producción</h5>
+                <span class="btn-acceso">Ingresar <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+
+            <a href="{% url 'estadisticas' %}" class="targe">
+                <div class="targ-header">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h2 class="tittarge">Estadísticas</h2>
+                </div>
+                <h5 class="target">Análisis de ventas y métricas empresariales</h5>
+                <span class="btn-acceso">Ingresar <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+
+            <a href="{% url 'empleados' %}" class="targe">
+                <div class="targ-header">
+                    <i class="fa-solid fa-user-group"></i>
+                    <h2 class="tittarge">Personal</h2>
+                </div>
+                <h5 class="target">Administrar empleados, roles y asignaciones</h5>
+                <span class="btn-acceso">Ingresar <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+
+            <a href="{% url 'clientes' %}" class="targe">
+                <div class="targ-header">
+                    <i class="fa-solid fa-people-group"></i>
+                    <h2 class="tittarge">Clientes</h2>
+                </div>
+                <h5 class="target">Directorio de clientes e historial de contactos</h5>
+                <span class="btn-acceso">Ingresar <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+        </div>
+
+    </main>
 </div>
 </body>
 </html>

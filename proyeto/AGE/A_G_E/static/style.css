@@ -1857,12 +1857,165 @@
 }
 /* pantallas grandes, de escritorio, quizá aqui haya que hacer algo con las pantallas full hd (1920 x 1080) porque creo que se verá estirado, de todas formas es eso mismo, a partir de 1000px hasta 1920px */
 @media screen and (min-width: 1000px) and (max-width: 2560px) {
-  .targetas {
+  /* .targetas {
     grid-template-columns: repeat(3, 1fr);
     grid-column-start: 4 / 12;
     grid-row: 1 / 4;
     transition: all 0.3s ease-in-out;
-  }
+  } */
+  /* Tarjetas KPI Resumen */
+  .dashboard-main-content {
+    grid-column: 1/13;
+    grid-row: 1;
+    padding: 2rem;
+}
+
+.bienvenida-banner {
+    margin-bottom: 1.5rem;
+}
+
+.bienvenida-banner h2 {
+    font-size: 1.6rem;
+    color: #1e293b;
+}
+
+.bienvenida-banner p {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+
+
+.subtitulo-seccion {
+    font-size: 1.2rem;
+    color: #334155;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Grid de Accesos Rápidos */
+.targetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  
+}
+
+.targe {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 10px;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: space-between; */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* height: 200px; */
+}
+
+.targe:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+.targ-header {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.targ-header i {
+    font-size: 1.4rem;
+    color: #2563eb;
+    margin-top: 10%;
+    margin-left: 25%;
+}
+
+.tittarge {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.target {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-bottom: 1.25rem;
+}
+
+.btn-acceso {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-acceso i {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.targ:hover .btn-acceso i {
+    transform: translateX(4px);
+}
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column: 1 / 13;
+    gap: 1.25rem;
+    width: 100%;
+    margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.kpi-icon.blue { background-color: #dbeafe; color: #2563eb; }
+.kpi-icon.green { background-color: #dcfce7; color: #16a34a; }
+.kpi-icon.orange { background-color: #ffedd5; color: #ea580c; }
+.kpi-icon.purple { background-color: #f3e8ff; color: #9333ea; }
+
+.kpi-detalles span {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: block;
+}
+
+.kpi-detalles h3 {
+    font-size: 1.3rem;
+    color: #0f172a;
+    margin-top: 0.2rem;
+}
 
   .menuoculto2 {
     display: none;
@@ -1878,7 +2031,7 @@
 }
 
   .perfil-dash {
-    grid-column: 10 / 13;
+    grid-column: 9 / 13;
     grid-row: 1;
     /* background-color: var(--colorCuentaDash); */
     height: 70px;
@@ -1887,7 +2040,7 @@
     align-items: center;
     gap: 10px;
     border-radius: 15px;
-    margin-top: -60px;
+    margin-top: -68px;
     z-index: 3;
   }
 
@@ -1909,10 +2062,10 @@
     position: fixed;
     height: 100%;
     /* top: 0; */
-    width: 171.984px;
+    width: 250.984px;
     object-fit: contain;
     z-index: 5;
-    left: 0;
+    left: -250px;
     overflow-y: auto;
     overflow-x: hidden;
     text-align: center;
@@ -1921,13 +2074,13 @@
     transition: all 0.3s ease-in-out;
   }
   .navlateral.open {
-    left: -250px;
+    left: 0;
   
   }
 
 
 .menuoculto {
-  color: #fff;
+  color: #000;
   font-size: 1.2rem;
 }
 #toggleBtn2 {
@@ -2844,7 +2997,7 @@
 }
 
 /* Las targetas del dashboard, este es el bloque donde están las 6 */
-.targetas {
+/* .targetas {
   grid-column: 3 / 12;
   grid-row: 1 / 4;
   margin-top: 10%;
@@ -2854,7 +3007,7 @@
   height: 100%;
   z-index: 1;
   transition: all 0.3s ease-in-out;
-}
+} */
 
 .targ:hover {
   transform: scale(1.04);
@@ -3310,14 +3463,18 @@ label {
 /* Esto es donde sale el usuario y su nombre, junto con el botón de cerrar sesion */
 /* Este es el enlace */
 .perfil-dash a {
+  background-color: #6198f1;
+  border-radius: 25px;
   text-decoration: none;
   padding: 10px;
   color: var(--colornegro);
   transition: 0.3s;
+  /* margin-top: -15px; */
 }
 
 .perfil-dash a:hover {
   transform: scale(1.03);
+  background-color: var(--colorazul);
 }
 /* ------------------------------------------------------- Estilos clientes ------------------------------------------------------------ */
 
@@ -5363,3 +5520,5 @@ body.activee .btn-cancelar:hover {
   background-color: #404040;
   color: #fff;
 }
+
+/* Layout del Contenido Principal */
