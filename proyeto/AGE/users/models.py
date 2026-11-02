@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=150, unique=True)
-    password = models.CharField(max_length=120)
 
     USERNAME_FIELD = 'username'
 

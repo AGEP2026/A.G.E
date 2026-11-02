@@ -12,9 +12,25 @@
 <body>
 <div class="contenedor-principal2">
          <div class="login">
-            <form id="login-form" action="{% url 'dashboard' %}" method="post">
+            {% if error %}
+            <p style="color: red;">{{ error }}</p>
+            {% endif %}
+            <form id="login-form" action="{% url 'login' %}" method="POST">
+
                 {% csrf_token %}
-                {{ form.as_p }}
+
+                {% if messages %}
+                {% for message in messages %}
+                <p style="color: red;">
+                    {{ message }}
+                </p>
+                {% endfor %}
+                {% endif %}
+
+                {% if form.errors %}
+                <p style="color: red;">
+                </p>
+                {% endif %}
             <label for="nombre">Usuario:</label>
             <input type="text" name="username" id="nombre" autocomplete="username" autofocus placeholder="Usuario.." required>
             <label for="password">Contraseña:</label>
