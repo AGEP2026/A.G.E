@@ -208,15 +208,173 @@
 /* --------------------------------------------------- RESPONSIVE --------------------------------------------------------------------------- */
 /* para pantallas pequeñas, ahi dice con un máximo de 595 pixeles de ancho, osea toda pantalla que sea menor a eso de ancho, se aplicará eso */
 @media screen and (max-width: 595px) {
-  .targetas {
+
+  /* Este es el enlace */
+.perfil-dash a {
+  background-color: #6198f1;
+  border-radius: 25px;
+  text-decoration: none;
+  padding: 10px;
+  color: var(--colornegro);
+  transition: 0.3s;
+  font-size: 7px;
+  /* margin-top: 7px; */
+}
+ /* Tarjetas KPI Resumen */
+  .dashboard-main-content {
+    grid-column: 1/13;
+    grid-row: 1;
+    padding: 2rem;
+}
+
+.bienvenida-banner {
+    margin-bottom: 1.5rem;
+}
+
+.bienvenida-banner h2 {
+    font-size: 1.6rem;
+    color: #1e293b;
+}
+
+.bienvenida-banner p {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+
+
+.subtitulo-seccion {
+    font-size: 1.2rem;
+    color: #334155;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Grid de Accesos Rápidos */
+.targetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));
+    gap: 1.5rem;
+  
+}
+
+.targe {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 10px;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: space-between; */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* height: 200px; */
+}
+
+.targe:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+.targ-header {
+    display: flex;
+    /* align-items: center; */
+    /* gap: 1.75rem; */
+    /* margin-bottom: 0.75rem; */
+    /* font-size: 2.4rem; */
+}
+
+.targ-header i {
+    font-size: 1.4rem;
+    color: #2563eb;
+    margin-top: 3%;
+    margin-left: 20%;
+}
+
+.tittarge {
+    font-size: 1.1rem;
+    /* margin-top: 5%; */
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.target {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 400;
+    line-height: 4.4;
+    margin-bottom: 1.25rem;
+}
+
+.btn-acceso {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-acceso i {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.targ:hover .btn-acceso i {
+    transform: translateX(4px);
+}
+.kpi-grid {
+    display: grid;
     grid-template-columns: repeat(1, 1fr);
-    grid-column-start: 5;
-    grid-row: 1 / 4;
-    height: 100%;
+    grid-column: 1 / 13;
+    gap: 1.25rem;
     width: 100%;
-    margin-left: 15px;
-    transition: all 0.3s ease-in-out;
-  }
+    margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.kpi-icon.blue { background-color: #dbeafe; color: #2563eb; }
+.kpi-icon.green { background-color: #dcfce7; color: #16a34a; }
+.kpi-icon.orange { background-color: #ffedd5; color: #ea580c; }
+.kpi-icon.purple { background-color: #f3e8ff; color: #9333ea; }
+
+.kpi-detalles span {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: block;
+}
+
+.kpi-detalles h3 {
+    font-size: 1.3rem;
+    color: #0f172a;
+    margin-top: 0.2rem;
+}
 
   .navlateral {
     width: 68px;
@@ -229,18 +387,18 @@
     overflow-x: hidden;
     text-align: center;
     scrollbar-width: none;
-    left: 0;
+    left: -250px;
     transition: all 0.3s ease-in-out;
   }
 
   .nav-Config {
-    left: 0;
+    left: -250px;
     background: #fff;
     border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 20px 15px;
     position: fixed;
-    margin-left: 71.98px;
+    /* margin-left: 71.98px; */
     width: 170px;
     height: 100%;
     z-index: 1;
@@ -307,7 +465,7 @@
     align-items: center;
     gap: 10px;
     border-radius: 15px;
-    margin-top: -65px;
+    margin-top: -60px;
     z-index: 3;
   }
 
@@ -855,7 +1013,7 @@
     /* Seguir una sintaxis de las sombras  */
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
-    grid-column: 2/13;
+    grid-column: 1/13;
     margin: 100px 80px -20px 80px;
     border-radius: 10px;
     overflow-x: auto;
@@ -1006,11 +1164,11 @@
   }
 
   .navlateral.open {
-    left: -250px;
+    left: 0;
 
   }
   .nav-Config.open {
-    left: -250px;
+    left: 0;
   }
 
   .menuoculto {
@@ -1018,8 +1176,9 @@
   }
   
   .menuoculto2 {
-    margin-right: -145px;
-    margin-top: 60px;
+    /* margin-right: -145px; */
+    /* margin-top: 60px; */
+    font-size: 1rem;
   }
   
   #toggleBtn {
@@ -1038,11 +1197,14 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    margin-top: 5px;
-    margin-left: 5px;
+    /* margin-top: 5px; */
+    /* margin-left: 5px; */
+    line-height: 50px;
     z-index: 6;
     position: fixed;
     color: #000;
+    top: 50px;
+    width: 38px;
   }
   
 .navlateral ul {
@@ -1084,12 +1246,173 @@
 
 /* pantallas medianas, dice que a partir de un ancho de 595, hasta un máximo de 1000pixel se aplicarán estos ajustes */
 @media screen and (min-width: 595px) and (max-width: 1000px) {
-  .targetas {
+
+  /* Este es el enlace */
+.perfil-dash a {
+  background-color: #6198f1;
+  border-radius: 25px;
+  text-decoration: none;
+  padding: 10px;
+  color: var(--colornegro);
+  transition: 0.3s;
+  /* margin-top: -15px; */
+}
+  /* Tarjetas KPI Resumen */
+  .dashboard-main-content {
+    grid-column: 1/13;
+    grid-row: 1;
+    padding: 2rem;
+}
+
+.bienvenida-banner {
+    margin-bottom: 1.5rem;
+}
+
+.bienvenida-banner h2 {
+    font-size: 1.6rem;
+    color: #1e293b;
+}
+
+.bienvenida-banner p {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+
+
+.subtitulo-seccion {
+    font-size: 1.2rem;
+    color: #334155;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Grid de Accesos Rápidos */
+.targetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
+    gap: 1.5rem;
+  
+}
+
+.targe {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 10px;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: space-between; */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* height: 200px; */
+}
+
+.targe:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+.targ-header {
+    display: flex;
+    /* align-items: center; */
+    /* gap: 1.75rem; */
+    /* margin-bottom: 0.75rem; */
+    /* font-size: 2.4rem; */
+}
+
+.targ-header i {
+    font-size: 1.4rem;
+    color: #2563eb;
+    margin-top: 3%;
+    margin-left: 20%;
+}
+
+.tittarge {
+    font-size: 1.1rem;
+    /* margin-top: 5%; */
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.target {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 400;
+    line-height: 4.4;
+    margin-bottom: 1.25rem;
+}
+
+.btn-acceso {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-acceso i {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.targ:hover .btn-acceso i {
+    transform: translateX(4px);
+}
+.kpi-grid {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-column-start: 4;
-    grid-row: 1 / 4;
-    transition: all 0.3s ease-in-out;
-  }
+    grid-column: 1 / 13;
+    gap: 1.25rem;
+    width: 100%;
+    margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.kpi-icon.blue { background-color: #dbeafe; color: #2563eb; }
+.kpi-icon.green { background-color: #dcfce7; color: #16a34a; }
+.kpi-icon.orange { background-color: #ffedd5; color: #ea580c; }
+.kpi-icon.purple { background-color: #f3e8ff; color: #9333ea; }
+
+.kpi-detalles span {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: block;
+}
+
+.kpi-detalles h3 {
+    font-size: 1.3rem;
+    color: #0f172a;
+    margin-top: 0.2rem;
+}
+
 
   .nav-Config {
     background: #fff;
@@ -1103,7 +1426,7 @@
     z-index: 1;
   }
   .menuoculto2 {
-    display: none;
+    /* display: none; */
   }
   .navlateral {
     width: 88px;
@@ -1112,11 +1435,11 @@
     height: 100%;
     object-fit: contain;
     z-index: 5;
+    left: -250px;
     overflow-y: auto;
     overflow-x: hidden;
     text-align: center;
     scrollbar-width: none;
-    left: 0;
     transition: all 0.3s ease-in-out;
   }
 
@@ -1648,7 +1971,7 @@
     /* Seguir una sintaxis de las sombras  */
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
-    grid-column: 2/13;
+    grid-column: 1/13;
     margin: 100px 80px -20px 80px;
     border-radius: 10px;
     overflow-x: auto;
@@ -1797,7 +2120,7 @@
   }
 
   .navlateral.open {
-    left: -250px;
+    left: 0;
 
   }
 
@@ -1857,6 +2180,17 @@
 }
 /* pantallas grandes, de escritorio, quizá aqui haya que hacer algo con las pantallas full hd (1920 x 1080) porque creo que se verá estirado, de todas formas es eso mismo, a partir de 1000px hasta 1920px */
 @media screen and (min-width: 1000px) and (max-width: 2560px) {
+
+/* Este es el enlace */
+.perfil-dash a {
+  background-color: #6198f1;
+  border-radius: 25px;
+  text-decoration: none;
+  padding: 10px;
+  color: var(--colornegro);
+  transition: 0.3s;
+  /* margin-top: -15px; */
+}
   /* .targetas {
     grid-template-columns: repeat(3, 1fr);
     grid-column-start: 4 / 12;
@@ -1898,7 +2232,7 @@
 /* Grid de Accesos Rápidos */
 .targetas {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
     gap: 1.5rem;
   
 }
@@ -1926,20 +2260,22 @@
 
 .targ-header {
     display: flex;
-    align-items: center;
-    gap: 1.75rem;
-    margin-bottom: 0.75rem;
+    /* align-items: center; */
+    /* gap: 1.75rem; */
+    /* margin-bottom: 0.75rem; */
+    /* font-size: 2.4rem; */
 }
 
 .targ-header i {
     font-size: 1.4rem;
     color: #2563eb;
-    margin-top: 10%;
-    margin-left: 25%;
+    margin-top: 3%;
+    margin-left: 30%;
 }
 
 .tittarge {
     font-size: 1.1rem;
+    /* margin-top: 5%; */
     font-weight: 600;
     color: #1e293b;
     margin: 0;
@@ -1949,7 +2285,7 @@
     font-size: 0.875rem;
     color: #64748b;
     font-weight: 400;
-    line-height: 1.4;
+    line-height: 4.4;
     margin-bottom: 1.25rem;
 }
 
@@ -2018,7 +2354,7 @@
 }
 
   .menuoculto2 {
-    display: none;
+    font-size: 1.4rem;
   }
   .nav ul li a {
     opacity: 1;
@@ -2075,16 +2411,22 @@
   }
   .navlateral.open {
     left: 0;
-  
   }
-
+.nav-Config.open {
+  left: 0;
+}
 
 .menuoculto {
   color: #000;
   font-size: 1.2rem;
 }
 #toggleBtn2 {
-  display: none;
+  position: relative;
+  top: 20px;
+  z-index: 4;
+  background: transparent;
+  border: none;
+  left: -30px;
 }
 #toggleBtn {
   background: transparent;
@@ -2115,7 +2457,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 20px 15px;
     position: fixed;
-    margin-left: 171.98px;
+    left: -250px;
+    /* margin-left: 171.98px; */
     height: 100%;
     z-index: 1;
     transition: all 0.3s ease-in-out;
@@ -2208,7 +2551,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     width: 90%;
-    margin-left: 40px;
+    /* margin-left: 40px; */
     margin-top: 20px;
   }
 
@@ -2587,8 +2930,8 @@
     border: 1px solid #ccc;
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
-    grid-column: 2 / 12;
-    margin: 100px 80px 20px 80px;
+    grid-column: 1 / 12;
+    margin: 100px 80px 20px 60px;
     border-radius: 10px;
     width: 100%;
     height: fit-content;
@@ -2646,7 +2989,7 @@
     /* Seguir una sintaxis de las sombras  */
     box-shadow: 6px 8px 10px #ccc;
     grid-row: 1 / 7;
-    grid-column: 4/12;
+    grid-column: 2/12;
     height: 100%;
     margin: 30px 0px;
     border-radius: 10px;
@@ -2804,7 +3147,7 @@
 .contenedor {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  /* grid-template-rows: repeat(5, 1fr); */
   width: 100%;
   height: 100%;
   overflow: hidden; 
@@ -3125,7 +3468,7 @@
 }
 
 .historial-facturas {
-  grid-column: 3 / 12;
+  grid-column: 2 / 12;
   grid-row: 1 / 7;
   padding: 18px 0 0 10px;
 }
@@ -3386,7 +3729,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  grid-column: 5 / 12;
+  grid-column: 2 / 12;
   grid-row: 1/12;
 }
 
@@ -3461,16 +3804,7 @@ label {
 }
 /* -------------------------------------------------------------------------------------------------------------------------------------- */
 /* Esto es donde sale el usuario y su nombre, junto con el botón de cerrar sesion */
-/* Este es el enlace */
-.perfil-dash a {
-  background-color: #6198f1;
-  border-radius: 25px;
-  text-decoration: none;
-  padding: 10px;
-  color: var(--colornegro);
-  transition: 0.3s;
-  /* margin-top: -15px; */
-}
+
 
 .perfil-dash a:hover {
   transform: scale(1.03);
@@ -3631,7 +3965,7 @@ label {
 /* ----------------------------------------------------- Estilos Inventario y Estadisticas generales ------------------------------------ */
 .contenido-inventario {
     grid-row: 1 / 8;
-    grid-column: 3 / 13;
+    grid-column: 2 / 13;
     width: 100%;
 }
 /* ------------------------------------------ Esta Parte es del buscador ------------------------------------ */
@@ -3900,7 +4234,7 @@ label {
 /* -------------------------------------------------- Tabla Productos ----------------------------------------------- */
 .seccion-productos {
   margin-top: 40px;
-  margin-left: 7px;
+  margin-left: -4%;
 }
 
 .titulo-tabla {
@@ -3981,7 +4315,7 @@ th {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   margin-top: 400px;
-  margin-left: -970px;
+  margin-left: -1030px;
 }
 
 .ulES {
@@ -4747,7 +5081,7 @@ select:focus {
 }
 
 .nav-Config li:first-child {
-  margin-top: 55px;
+  margin-top: 100px;
 }
 
 .nav-Config a {
@@ -4760,7 +5094,7 @@ select:focus {
   margin-bottom: 10px;
 }
 .config-principal {
-  grid-column: 5 / 12;
+  grid-column: 2 / 12;
   margin-top: 36px;
   width: 100%;
   background: #fff;
@@ -4781,7 +5115,7 @@ select:focus {
 }
 
 .contenido-config {
-  grid-column: 5 / 12;
+  grid-column: 2 / 12;
   grid-row: 1 / 7;
   margin-top: 36px;
   width: 100%;
@@ -4796,7 +5130,7 @@ select:focus {
 }
 
 .acercaDe {
-  grid-column: 5 / 12;
+  grid-column: 2 / 12;
   grid-row: 1 / 7;
   left: 580px;
   margin-top: 36px;
