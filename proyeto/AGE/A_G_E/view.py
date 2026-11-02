@@ -1,13 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from users.models import UserRole
+from django.contrib.auth import logout
 
 def A_G_E(request):
     return render(request, 'A_G_E/index.html')
 
 
 def login(request):
-    return render(request, 'A_G_E/login.html')
+    return render(request, 'users/login.html')
 
 
 def register(request):
@@ -18,6 +19,7 @@ def recuperarCuenta(request):
     return render(request, 'A_G_E/recuperarCuenta.html')
 
 
+@login_required
 def dashboard(request):
     return render(request, 'A_G_E/dashboard.html')
 
@@ -137,4 +139,8 @@ def dashboard_view(request):
         'roles': [ur.role.role_name for ur in user_roles],
     }
     return render(request, 'A_G_E/dashboard.html', context)
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
