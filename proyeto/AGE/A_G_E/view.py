@@ -1,5 +1,6 @@
 from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
+from users.models import UserRole
 
 def A_G_E(request):
     return render(request, 'A_G_E/index.html')
@@ -106,3 +107,34 @@ def aproducto(request):
 
 def aorden(request):
     return render(request, 'A_G_E/agregarOrden.html')
+
+@login_required
+def dashboard_view(request):
+    user_roles = UserRole.objects.filter(user_id=request.user)
+
+    permissions = {
+        'clientes': 0,
+        'facturacion': 0,
+        'empleado': 0,
+        'inventario': 0,
+        'produccion': 0,
+        'estadisticas': 0,
+        'impuestos': 0,
+        'empresa': 0,
+        'usuarios': 0,
+        'respaldos': 0,
+        'seguridad': 0,
+    }
+    for user_role in user_roles:
+        role = user_role.role
+        for module in permissions.keys():
+            current_permissions = getattr(role,module)
+            if current_permissions > permissions[module]:
+                permissions[module] = current_permissions
+    context = {
+        'user': request.user,
+        'permissions': permissions,
+        'roles': [ur.role.role_name for ur in user_roles],
+    }
+    return render(request, 'A_G_E/dashboard.html', context)
+
