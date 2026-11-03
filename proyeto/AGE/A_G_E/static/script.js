@@ -1256,22 +1256,50 @@ function registrarNotificacion(categoria, titulo, descripcion, icono) {
     actualizarIndicadorNotificaciones();
 }
 
-// Muestra un punto en la campana si hay notificaciones sin leer
 function actualizarIndicadorNotificaciones() {
-    const sinLeer = leerNotificaciones().filter(notificacion => !notificacion.leida).length;
-    document.querySelectorAll('a[href="notificaciones.html"]').forEach(enlace => {
-        let indicador = enlace.querySelector('[data-indicador-notificacion]');
-        if (!indicador) {
-            indicador = document.createElement('span');
-            indicador.dataset.indicadorNotificacion = 'true';
-            indicador.setAttribute('aria-hidden', 'true');
-            indicador.style.cssText = 'position:absolute;top:0;right:0;width:9px;height:9px;border-radius:50%;background:#ef4444;border:1px solid #fff;';
-            enlace.style.position = 'relative';
-            enlace.appendChild(indicador);
-        }
-        indicador.style.display = sinLeer ? 'block' : 'none';
-        enlace.setAttribute('aria-label', sinLeer ? `Notificaciones, ${sinLeer} sin leer` : 'Notificaciones');
-    });
+  const sinLeer = leerNotificaciones().filter(
+    (notificacion) => !notificacion.leida
+  ).length;
+
+  // 1. Actualizar el botón de las tres rayas (toggleBtn)
+  const toggleBtn = document.getElementById("toggleBtn");
+  if (toggleBtn) {
+    let indicadorToggle = toggleBtn.querySelector("[data-indicador-toggle]");
+    if (!indicadorToggle) {
+      indicadorToggle = document.createElement("span");
+      indicadorToggle.dataset.indicadorToggle = "true";
+      indicadorToggle.setAttribute("aria-hidden", "true");
+      // Modificamos top y right para posicionarlo arriba a la derecha del botón
+      indicadorToggle.style.cssText =
+        "position:absolute; top:10px; right:12px; width:10px; height:10px; border-radius:50%; background:#ef4444; border:1px solid #fff; display:none; z-index:10;";
+      if (getComputedStyle(toggleBtn).position === "static") {
+        toggleBtn.style.position = "relative";
+      }
+      toggleBtn.appendChild(indicadorToggle);
+    }
+    indicadorToggle.style.display = sinLeer > 0 ? "block" : "none";
+  }
+
+  // 2. Actualizar los enlaces o iconos de notificaciones (campana)
+  document.querySelectorAll('a[href*="notificaciones"]').forEach((enlace) => {
+    let indicador = enlace.querySelector("[data-indicador-notificacion]");
+    if (!indicador) {
+      indicador = document.createElement("span");
+      indicador.dataset.indicadorNotificacion = "true";
+      indicador.setAttribute("aria-hidden", "true");
+      indicador.style.cssText =
+        "position:absolute; top:0; right:0; width:9px; height:9px; border-radius:50%; background:#ef4444; border:1px solid #fff;";
+      if (getComputedStyle(enlace).position === "static") {
+        enlace.style.position = "relative";
+      }
+      enlace.appendChild(indicador);
+    }
+    indicador.style.display = sinLeer > 0 ? "block" : "none";
+    enlace.setAttribute(
+      "aria-label",
+      sinLeer ? `Notificaciones, ${sinLeer} sin leer` : "Notificaciones"
+    );
+  });
 }
 
 // Muestra hace cuanto llego la notificacion

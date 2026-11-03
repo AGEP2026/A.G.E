@@ -698,6 +698,17 @@
     height: 190%;
   }
 
+  .campana, .campanainv {
+    display: flex !important;
+    position: absolute !important;
+    right: 15px !important;
+    top: 15px !important;
+    margin: 0 !important;
+    justify-content: flex-end;
+    z-index: 10;
+  }
+
+
   .card h2 {
     margin-top: 20px;
   }
@@ -903,18 +914,6 @@
     padding: 24px;
   }
 
-  .campana {
-    margin-top: 20px;
-    font-size: 1.2rem;
-    margin-left: 360px;
-  }
-
-  .campanainv {
-    margin-top: 20px;
-    grid-column: 1;
-    font-size: 1.2rem;
-    margin-left: 300px;
-  }
   .topbar-nf {
     margin-top: -20px;
     margin-left: -30px;
@@ -1426,9 +1425,7 @@
     z-index: 1;
   }
   
-  .menuoculto2 {
-    /* display: none; */
-  }
+  
   .navlateral {
     width: 88px;
     background-color: var(--colornegro);
@@ -1783,12 +1780,16 @@
     margin-right: 15px;
   }
 
-  .campana {
-    display: flex;
-    margin-top: -25px;
-    justify-content: end;
-    margin-right: 15px;
+  .campana, .campanainv {
+    display: flex !important;
+    position: absolute !important;
+    right: 20px !important;
+    top: 20px !important;
+    margin: 0 !important;
+    justify-content: flex-end;
+    z-index: 10;
   }
+
 
   .topbar a {
     text-decoration: none;
@@ -2439,10 +2440,7 @@
   position: fixed;
 }
 
-  .campana {
-    /* margin-top: 20px; */
-    display: none;
-  }
+
 
 
   .buscador button i, 
@@ -2840,9 +2838,10 @@
     border: 1px solid #cbd5e1;
   }
 
-  .campanainv{
-    opacity: 0;
+  .campana, .campanainv {
+  display: none !important;
   }
+
   .buscador-inv {
     margin-left: -60px;
     margin-top: -18px;
