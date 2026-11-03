@@ -2115,3 +2115,387 @@ if (localStorage.getItem("modo-oscuro") === "true") {
         modo_oscuro.value = "claro";
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const canvasES = document.getElementById("graficoES");
+  if (!canvasES) return;
+
+  const ctx = canvasES.getContext("2d");
+
+  const graficoES = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+      datasets: [
+        {
+          label: "Entradas",
+          data: [5, 12, 8, 15, 20, 7, 14, 9, 18, 11],
+          backgroundColor: "rgba(34, 197, 94, 0.75)",
+          borderColor: "rgba(34, 197, 94, 1)",
+          borderWidth: 1,
+          borderRadius: 4
+        },
+        {
+          label: "Salidas",
+          data: [3, 8, 4, 10, 12, 5, 9, 6, 12, 7],
+          backgroundColor: "rgba(239, 68, 68, 0.75)",
+          borderColor: "rgba(239, 68, 68, 1)",
+          borderWidth: 1,
+          borderRadius: 4
+        }
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          top: 16
+        }
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: false,
+        },
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grace: "20%"
+        }
+      }
+    },
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const canvasPPC = document.getElementById("graficoPPC");
+  if (!canvasPPC) return;
+
+  const ctxPPC = canvasPPC.getContext("2d");
+
+  const graficoPPC = new Chart(ctxPPC, {
+    type: "doughnut", // Tipo dona
+    data: {
+      labels: ["Electrónica", "Ropa", "Alimentos", "Hogar", "Otros"],
+      datasets: [
+        {
+          label: "Productos por Categoría",
+          data: [35, 25, 20, 12, 8],
+          backgroundColor: [
+            "rgba(59, 130, 246, 0.75)", 
+            "rgba(16, 185, 129, 0.75)", 
+            "rgba(245, 158, 11, 0.75)", 
+            "rgba(139, 92, 246, 0.75)", 
+            "rgba(100, 116, 139, 0.75)", 
+          ],
+          borderColor: [
+            "rgba(59, 130, 246, 1)",
+            "rgba(16, 185, 129, 1)",
+            "rgba(245, 158, 11, 1)",
+            "rgba(139, 92, 246, 1)",
+            "rgba(100, 116, 139, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Mantiene el diseño controlado dentro de la tarjeta
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: false,
+        },
+      },
+    },
+  });
+
+  const listaCategorias = document.getElementById("lista-categorias-productos");
+  if (!listaCategorias) return;
+
+  const valores = graficoPPC.data.datasets[0].data;
+  const total = valores.reduce((suma, valor) => suma + Number(valor || 0), 0);
+  listaCategorias.replaceChildren();
+
+  if (total === 0) {
+    const vacio = document.createElement("li");
+    vacio.className = "categoria-producto-vacia";
+    vacio.textContent = "No hay productos para mostrar";
+    listaCategorias.appendChild(vacio);
+    return;
+  }
+
+  graficoPPC.data.labels.forEach((categoria, indice) => {
+    const fila = document.createElement("li");
+    fila.className = "categoria-producto-fila";
+
+    const nombre = document.createElement("span");
+    nombre.className = "categoria-producto-nombre";
+
+    const color = document.createElement("span");
+    color.className = "categoria-producto-color";
+    color.style.backgroundColor = graficoPPC.data.datasets[0].backgroundColor[indice];
+    color.setAttribute("aria-hidden", "true");
+
+    const texto = document.createElement("span");
+    texto.textContent = categoria;
+    nombre.append(color, texto);
+
+    const porcentaje = document.createElement("span");
+    porcentaje.className = "categoria-producto-porcentaje";
+    porcentaje.textContent = `${(Number(valores[indice]) / total * 100).toFixed(1)}%`;
+
+    fila.append(nombre, porcentaje);
+    listaCategorias.appendChild(fila);
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const canvasVG = document.getElementById("graficoVG");
+  const canvasVPC = document.getElementById("graficoVPC");
+  const canvasVPCA = document.getElementById("graficoVPCA");
+  if (!canvasVG || !canvasVPC || !canvasVPCA) return;
+
+  const colores = [
+    "rgba(59, 130, 246, 0.8)",
+    "rgba(16, 185, 129, 0.8)",
+    "rgba(245, 158, 11, 0.8)",
+    "rgba(139, 92, 246, 0.8)",
+    "rgba(239, 68, 68, 0.8)",
+    "rgba(20, 184, 166, 0.8)"
+  ];
+  const formatoMoneda = new Intl.NumberFormat("es-DO", {
+    style: "currency",
+    currency: "DOP",
+    maximumFractionDigits: 0
+  });
+
+  function leerLista(clave) {
+    try {
+      const datos = JSON.parse(localStorage.getItem(clave)) || [];
+      return Array.isArray(datos) ? datos : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function obtenerPeriodo(periodo) {
+    const hoy = new Date();
+    const fechaFin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+    let fechaInicio = new Date(fechaFin);
+    let etiquetas;
+    let claveDeFecha;
+
+    if (periodo === "dia") {
+      etiquetas = ["Hoy"];
+      claveDeFecha = () => "0";
+    } else if (periodo === "semana") {
+      const diaSemana = (fechaFin.getDay() + 6) % 7;
+      fechaInicio.setDate(fechaFin.getDate() - diaSemana);
+      etiquetas = Array.from({ length: 7 }, (_, indice) => {
+        const fecha = new Date(fechaInicio);
+        fecha.setDate(fechaInicio.getDate() + indice);
+        return fecha.toLocaleDateString("es-DO", { weekday: "short" });
+      });
+      claveDeFecha = fecha => {
+        const fechaRegistro = new Date(`${fecha}T00:00:00`);
+        return String(Math.round((fechaRegistro - fechaInicio) / 86400000));
+      };
+    } else if (periodo === "año") {
+      fechaInicio = new Date(hoy.getFullYear(), 0, 1);
+      etiquetas = Array.from({ length: 12 }, (_, indice) =>
+        new Date(hoy.getFullYear(), indice, 1).toLocaleDateString("es-DO", { month: "short" })
+      );
+      claveDeFecha = fecha => String(Number(fecha.slice(5, 7)) - 1);
+    } else {
+      fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+      const diasMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
+      etiquetas = Array.from({ length: diasMes }, (_, indice) => String(indice + 1));
+      claveDeFecha = fecha => String(Number(fecha.slice(8, 10)) - 1);
+    }
+
+    const aISO = fecha => `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, "0")}-${String(fecha.getDate()).padStart(2, "0")}`;
+    return { inicio: aISO(fechaInicio), fin: aISO(fechaFin), etiquetas, claveDeFecha };
+  }
+
+  function actualizarGraficas() {
+    const rangoVG = obtenerPeriodo(document.querySelector(".tiempoVG").value);
+    const rangoVPC = obtenerPeriodo(document.querySelector(".tiempoVPC").value);
+    const rangoVPCA = obtenerPeriodo(document.querySelector(".tiempoVPCA").value);
+    const facturas = leerLista("facturasAGE").filter(factura => factura.estado !== "Anulada");
+    const facturasVG = facturas.filter(factura => factura.fecha >= rangoVG.inicio && factura.fecha <= rangoVG.fin);
+    const facturasVPC = facturas.filter(factura => factura.fecha >= rangoVPC.inicio && factura.fecha <= rangoVPC.fin);
+    const facturasVPCA = facturas.filter(factura => factura.fecha >= rangoVPCA.inicio && factura.fecha <= rangoVPCA.fin);
+    const ventasPorFecha = Array(rangoVG.etiquetas.length).fill(0);
+    const ventasPorCanal = new Map();
+    const ventasPorCategoria = new Map();
+    const productos = leerLista("productosAGE");
+    const categoriasPorProducto = new Map(
+      productos.map(producto => [
+        String(producto.nombre || "").trim().toLowerCase(),
+        producto.categoria || "Sin categoría"
+      ])
+    );
+
+    facturasVG.forEach(factura => {
+      const fechaIndex = Number(rangoVG.claveDeFecha(factura.fecha));
+      if (Number.isInteger(fechaIndex) && fechaIndex >= 0 && fechaIndex < ventasPorFecha.length) {
+        ventasPorFecha[fechaIndex] += Number(factura.total) || 0;
+      }
+    });
+
+    facturasVPC.forEach(factura => {
+      const canal = String(factura.canalVenta || factura.canal || factura.origen || "Venta directa");
+      ventasPorCanal.set(canal, (ventasPorCanal.get(canal) || 0) + (Number(factura.total) || 0));
+    });
+
+    facturasVPCA.forEach(factura => {
+      (Array.isArray(factura.items) ? factura.items : []).forEach(item => {
+        const nombreProducto = String(item.producto || "").trim().toLowerCase();
+        const categoria = String(categoriasPorProducto.get(nombreProducto) || item.categoria || "Sin categoría");
+        const total = Number(item.total) || (Number(item.cantidad) || 0) * (Number(item.precio) || 0);
+        ventasPorCategoria.set(categoria, (ventasPorCategoria.get(categoria) || 0) + total);
+      });
+    });
+
+    graficoVG.data.labels = rangoVG.etiquetas;
+    graficoVG.data.datasets[0].data = ventasPorFecha;
+    graficoVG.data.datasets[1].data = Array(rangoVG.etiquetas.length).fill(0);
+    graficoVG.update();
+
+    const actualizarPastel = (grafico, datos) => {
+      grafico.data.labels = Array.from(datos.keys());
+      grafico.data.datasets[0].data = Array.from(datos.values());
+      grafico.data.datasets[0].backgroundColor = grafico.data.labels.map((_, indice) => colores[indice % colores.length]);
+      grafico.update();
+    };
+    actualizarPastel(graficoVPC, ventasPorCanal);
+    actualizarPastel(graficoVPCA, ventasPorCategoria);
+  }
+
+  const graficoVG = new Chart(canvasVG.getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: "Ventas",
+          data: [],
+          backgroundColor: "rgba(59, 130, 246, 0.75)",
+          borderColor: "rgba(59, 130, 246, 1)",
+          borderWidth: 1,
+          borderRadius: 4
+        },
+        {
+          label: "Ganancias (sin costos registrados)",
+          data: [],
+          backgroundColor: "rgba(16, 185, 129, 0.75)",
+          borderColor: "rgba(16, 185, 129, 1)",
+          borderWidth: 1,
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function (valor) {
+              const hayVentas = this.chart.data.datasets.some(dataset =>
+                dataset.data.some(dato => Number(dato) > 0)
+              );
+              return hayVentas ? formatoMoneda.format(valor) : "0";
+            }
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: "mensajeSinVentas",
+      afterDraw(chart) {
+        if (chart.data.datasets.some(dataset => dataset.data.some(valor => Number(valor) > 0))) return;
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
+        ctx.save();
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "14px Arial";
+        ctx.fillText("Sin ventas para este período", (chartArea.left + chartArea.right) / 2, (chartArea.top + chartArea.bottom) / 2);
+        ctx.restore();
+      }
+    }]
+  });
+
+  const crearGraficoPastel = canvas => new Chart(canvas.getContext("2d"), {
+    type: "pie",
+    data: {
+      labels: [],
+      datasets: [{
+        data: [],
+        backgroundColor: colores,
+        borderColor: "#fff",
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { boxWidth: 12, padding: 12 }
+        },
+        tooltip: {
+          callbacks: {
+            label: contexto => `${contexto.label}: ${formatoMoneda.format(contexto.raw)}`
+          }
+        },
+        mensajeSinDatos: {
+          texto: "Sin ventas para este período"
+        }
+      }
+    },
+    plugins: [{
+      id: "mensajeSinDatos",
+      afterDraw(chart, args, opciones) {
+        const hayDatos = chart.data.datasets.some(dataset => dataset.data.some(valor => Number(valor) > 0));
+        if (hayDatos) return;
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
+        ctx.save();
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "14px Arial";
+        ctx.fillText(opciones.texto, (chartArea.left + chartArea.right) / 2, (chartArea.top + chartArea.bottom) / 2);
+        ctx.restore();
+      }
+    }]
+  });
+
+  const graficoVPC = crearGraficoPastel(canvasVPC);
+  const graficoVPCA = crearGraficoPastel(canvasVPCA);
+  [".tiempoVG", ".tiempoVPC", ".tiempoVPCA"].forEach(selector => {
+    document.querySelector(selector).addEventListener("change", actualizarGraficas);
+  });
+  window.addEventListener("storage", actualizarGraficas);
+  actualizarGraficas();
+});
