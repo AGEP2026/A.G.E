@@ -109,6 +109,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# No borren eto, e pa que no de problemas al abrir en el navegador con el link de railway
+CSRF_TRUSTED_ORIGINS = [
+    "https://age-production-8d0d.up.railway.app",
+]
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
