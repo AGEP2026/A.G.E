@@ -5864,5 +5864,6 @@ body.activee .btn-cancelar:hover {
   background-color: #404040;
   color: #fff;
 }
-
-/* Layout del Contenido Principal */
+body.activee .bienvenida-banner h2 {
+  color: #fff;
+}
