@@ -3,7 +3,9 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import LoginForm
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 def login_view(request):
 
@@ -11,28 +13,13 @@ def login_view(request):
         return redirect('dashboard')
 
     if request.method == 'POST':
-
-        print("LOGIN: POST RECIBIDO")
-
         form = LoginForm(request, data=request.POST)
-
         if form.is_valid():
-
-            print("LOGIN: FORMULARIO VALIDO")
-
             user = form.get_user()
-
-            print("LOGIN: USUARIO:", user.username)
-
             login(request, user)
-
             return redirect('dashboard')
 
         else:
-
-            print("LOGIN: FORMULARIO INVALIDO")
-            print("ERRORES:", form.errors)
-
             messages.error(
                 request,
                 'Usuario o contraseña incorrectos.'
@@ -57,3 +44,35 @@ def logout_view(request):
     )
 
     return redirect('login')
+
+def register(request):
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if password != confirm_password:
+            messages.error(request, 'Las contraseñas no coinciden.')
+            return redirect('register')
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'El usuario ya existe')
+            return redirect('register')
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'El correo ya esta registrado')
+            return redirect('register')
+        
+        User.objects.create_user(username=username, email=email, password=password)
+        
+        messages.success(request, 'Usuario registrado exitosamente')
+        return redirect('login')
+    return render(request, 'users/register.html')
+
+
+
+
+    
+    
