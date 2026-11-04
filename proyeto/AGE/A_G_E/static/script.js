@@ -2149,15 +2149,54 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!canvasES) return;
 
   const ctx = canvasES.getContext("2d");
+  const selectorPeriodo = document.querySelector(".tiempoES");
+  const fechaActual = new Date();
+  const seriesBase = [
+    [5, 12, 8, 15, 20, 7, 14, 9, 18, 11],
+    [3, 8, 4, 10, 12, 5, 9, 6, 12, 7]
+  ];
+
+  function obtenerEtiquetas(periodo) {
+    const hoy = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate());
+
+    if (periodo === "dia") return ["Hoy"];
+
+    if (periodo === "semana") {
+      const inicioSemana = new Date(hoy);
+      inicioSemana.setDate(hoy.getDate() - (hoy.getDay() + 6) % 7);
+      return Array.from({ length: 7 }, (_, indice) => {
+        const fecha = new Date(inicioSemana);
+        fecha.setDate(inicioSemana.getDate() + indice);
+        return fecha.toLocaleDateString("es-DO", { weekday: "short" });
+      });
+    }
+
+    if (periodo === "año") {
+      return Array.from({ length: 12 }, (_, indice) =>
+        new Date(hoy.getFullYear(), indice, 1).toLocaleDateString("es-DO", { month: "short" })
+      );
+    }
+
+    const diasDelMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
+    return Array.from({ length: diasDelMes }, (_, indice) => String(indice + 1));
+  }
+
+  function ajustarSerie(datos, cantidad) {
+    if (cantidad === 1) return [datos.reduce((total, valor) => total + valor, 0)];
+    return Array.from({ length: cantidad }, (_, indice) => {
+      const indiceBase = Math.round(indice * (datos.length - 1) / (cantidad - 1));
+      return datos[indiceBase];
+    });
+  }
 
   const graficoES = new Chart(ctx, {
     type: "bar",
     data: {
-      labels: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+      labels: [],
       datasets: [
         {
           label: "Entradas",
-          data: [5, 12, 8, 15, 20, 7, 14, 9, 18, 11],
+          data: [],
           backgroundColor: "rgba(34, 197, 94, 0.75)",
           borderColor: "rgba(34, 197, 94, 1)",
           borderWidth: 1,
@@ -2165,7 +2204,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
           label: "Salidas",
-          data: [3, 8, 4, 10, 12, 5, 9, 6, 12, 7],
+          data: [],
           backgroundColor: "rgba(239, 68, 68, 0.75)",
           borderColor: "rgba(239, 68, 68, 1)",
           borderWidth: 1,
@@ -2202,6 +2241,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     },
   });
+
+  function actualizarGraficoES() {
+    const etiquetas = obtenerEtiquetas(selectorPeriodo.value);
+    graficoES.data.labels = etiquetas;
+    graficoES.data.datasets.forEach((dataset, indice) => {
+      dataset.data = ajustarSerie(seriesBase[indice], etiquetas.length);
+    });
+    graficoES.update();
+  }
+
+  selectorPeriodo.addEventListener("change", actualizarGraficoES);
+  actualizarGraficoES();
 });
 
 document.addEventListener("DOMContentLoaded", function () {
