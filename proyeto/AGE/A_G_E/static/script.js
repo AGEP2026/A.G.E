@@ -1850,6 +1850,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function guardarProductos(productos) {
         localStorage.setItem(PRODUCTOS_KEY, JSON.stringify(productos));
+        window.dispatchEvent(new Event("productosActualizados"));
     }
 
     function siguienteCodigo(productos) {
@@ -2255,91 +2256,91 @@ document.addEventListener("DOMContentLoaded", function () {
   actualizarGraficoES();
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  const canvasPPC = document.getElementById("graficoPPC");
-  if (!canvasPPC) return;
+// document.addEventListener("DOMContentLoaded", function () {
+//   const canvasPPC = document.getElementById("graficoPPC");
+//   if (!canvasPPC) return;
 
-  const ctxPPC = canvasPPC.getContext("2d");
+//   const ctxPPC = canvasPPC.getContext("2d");
 
-  const graficoPPC = new Chart(ctxPPC, {
-    type: "doughnut", // Tipo dona
-    data: {
-      labels: ["Electrónica", "Ropa", "Alimentos", "Hogar", "Otros"],
-      datasets: [
-        {
-          label: "Productos por Categoría",
-          data: [35, 25, 20, 12, 8],
-          backgroundColor: [
-            "rgba(59, 130, 246, 0.75)", 
-            "rgba(16, 185, 129, 0.75)", 
-            "rgba(245, 158, 11, 0.75)", 
-            "rgba(139, 92, 246, 0.75)", 
-            "rgba(100, 116, 139, 0.75)", 
-          ],
-          borderColor: [
-            "rgba(59, 130, 246, 1)",
-            "rgba(16, 185, 129, 1)",
-            "rgba(245, 158, 11, 1)",
-            "rgba(139, 92, 246, 1)",
-            "rgba(100, 116, 139, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false, // Mantiene el diseño controlado dentro de la tarjeta
-      plugins: {
-        legend: {
-          display: false,
-        },
-        title: {
-          display: false,
-        },
-      },
-    },
-  });
+//   const graficoPPC = new Chart(ctxPPC, {
+//     type: "doughnut", // Tipo dona
+//     data: {
+//       labels: ["Electrónica", "Ropa", "Alimentos", "Hogar", "Otros"],
+//       datasets: [
+//         {
+//           label: "Productos por Categoría",
+//           data: [35, 25, 20, 12, 8],
+//           backgroundColor: [
+//             "rgba(59, 130, 246, 0.75)", 
+//             "rgba(16, 185, 129, 0.75)", 
+//             "rgba(245, 158, 11, 0.75)", 
+//             "rgba(139, 92, 246, 0.75)", 
+//             "rgba(100, 116, 139, 0.75)", 
+//           ],
+//           borderColor: [
+//             "rgba(59, 130, 246, 1)",
+//             "rgba(16, 185, 129, 1)",
+//             "rgba(245, 158, 11, 1)",
+//             "rgba(139, 92, 246, 1)",
+//             "rgba(100, 116, 139, 1)",
+//           ],
+//           borderWidth: 1,
+//         },
+//       ],
+//     },
+//     options: {
+//       responsive: true,
+//       maintainAspectRatio: false, // Mantiene el diseño controlado dentro de la tarjeta
+//       plugins: {
+//         legend: {
+//           display: false,
+//         },
+//         title: {
+//           display: false,
+//         },
+//       },
+//     },
+//   });
 
-  const listaCategorias = document.getElementById("lista-categorias-productos");
-  if (!listaCategorias) return;
+//   const listaCategorias = document.getElementById("lista-categorias-productos");
+//   if (!listaCategorias) return;
 
-  const valores = graficoPPC.data.datasets[0].data;
-  const total = valores.reduce((suma, valor) => suma + Number(valor || 0), 0);
-  listaCategorias.replaceChildren();
+//   const valores = graficoPPC.data.datasets[0].data;
+//   const total = valores.reduce((suma, valor) => suma + Number(valor || 0), 0);
+//   listaCategorias.replaceChildren();
 
-  if (total === 0) {
-    const vacio = document.createElement("li");
-    vacio.className = "categoria-producto-vacia";
-    vacio.textContent = "No hay productos para mostrar";
-    listaCategorias.appendChild(vacio);
-    return;
-  }
+//   if (total === 0) {
+//     const vacio = document.createElement("li");
+//     vacio.className = "categoria-producto-vacia";
+//     vacio.textContent = "No hay productos para mostrar";
+//     listaCategorias.appendChild(vacio);
+//     return;
+//   }
 
-  graficoPPC.data.labels.forEach((categoria, indice) => {
-    const fila = document.createElement("li");
-    fila.className = "categoria-producto-fila";
+//   graficoPPC.data.labels.forEach((categoria, indice) => {
+//     const fila = document.createElement("li");
+//     fila.className = "categoria-producto-fila";
 
-    const nombre = document.createElement("span");
-    nombre.className = "categoria-producto-nombre";
+//     const nombre = document.createElement("span");
+//     nombre.className = "categoria-producto-nombre";
 
-    const color = document.createElement("span");
-    color.className = "categoria-producto-color";
-    color.style.backgroundColor = graficoPPC.data.datasets[0].backgroundColor[indice];
-    color.setAttribute("aria-hidden", "true");
+//     const color = document.createElement("span");
+//     color.className = "categoria-producto-color";
+//     color.style.backgroundColor = graficoPPC.data.datasets[0].backgroundColor[indice];
+//     color.setAttribute("aria-hidden", "true");
 
-    const texto = document.createElement("span");
-    texto.textContent = categoria;
-    nombre.append(color, texto);
+//     const texto = document.createElement("span");
+//     texto.textContent = categoria;
+//     nombre.append(color, texto);
 
-    const porcentaje = document.createElement("span");
-    porcentaje.className = "categoria-producto-porcentaje";
-    porcentaje.textContent = `${(Number(valores[indice]) / total * 100).toFixed(1)}%`;
+//     const porcentaje = document.createElement("span");
+//     porcentaje.className = "categoria-producto-porcentaje";
+//     porcentaje.textContent = `${(Number(valores[indice]) / total * 100).toFixed(1)}%`;
 
-    fila.append(nombre, porcentaje);
-    listaCategorias.appendChild(fila);
-  });
-});
+//     fila.append(nombre, porcentaje);
+//     listaCategorias.appendChild(fila);
+//   });
+// });
 
 document.addEventListener("DOMContentLoaded", function () {
   const canvasVG = document.getElementById("graficoVG");
@@ -2577,4 +2578,157 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   window.addEventListener("storage", actualizarGraficas);
   actualizarGraficas();
+});
+
+
+
+// Pa que la grafica PPC lea los productos existenten y nuevos faaaah
+document.addEventListener("DOMContentLoaded", function () {
+    const canvasPPC = document.getElementById("graficoPPC");
+    if (!canvasPPC) return;
+    
+    const ctxPPC = canvasPPC.getContext("2d");
+    
+    // pa generar color aleatorio hahah
+    function generarColorAleatorio() {
+        const tono = Math.floor(Math.random() * 360);
+        return {
+            bg: 'hsl(' + tono + ', 70%, 60%, 0.75)',
+            border: 'hsl(' + tono + ', 70%, 45%, 1)'
+        };
+    }
+
+    // Leer productos de el inventarioo faah
+    function leerProductosInventario() {
+        try {
+            const guardados = JSON.parse(localStorage.getItem('productosAGE')) || [];
+            return Array.isArray(guardados) ? guardados : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+
+    function obtenerDatosPorCategoria() {
+        const productos = leerProductosInventario();
+        const conteoCategorias = {};
+
+        productos.forEach(producto => {
+            const categoria = (producto.categoria || 'Sin categoría').trim();
+            const cantidad = Number(producto.cantidad) || 0;
+            conteoCategorias[categoria] = (conteoCategorias[categoria] || 0) + cantidad;
+        });
+
+        const labels = Object.keys(conteoCategorias);
+        const data = Object.values(conteoCategorias);
+        return {labels, data };
+    }
+
+    const {labels, data } = obtenerDatosPorCategoria();
+
+    const coloresIniciales = labels.map(() => generarColorAleatorio());
+    
+    const graficoPPC = new Chart(ctxPPC, {
+      type: "doughnut",
+      data: {
+        labels: labels.length ? labels : ["Sin productos"],
+        datasets: [
+          {
+            label: "Productos por Categoría",
+            data: data.length ? data : [1],
+            backgroundColor: labels.length
+              ? coloresIniciales.map((c) => c.bg)
+              : ["rgba(100, 116, 139, 0.75)"],
+            borderColor: labels.length
+              ? coloresIniciales.map((c) => c.border)
+              : ["rgba(100, 116, 139, 1)"],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: false },
+        },
+      },
+    });
+
+
+    const listaCategorias = document.getElementById("lista-categorias-productos");
+    if(!listaCategorias) return;
+
+    function actualizarListaYGrafica() {
+      const actualizacion = obtenerDatosPorCategoria();
+      const total = actualizacion.data.reduce(
+        (suma, valor) => suma + Number(valor || 0),
+        0
+      );
+
+      listaCategorias.replaceChildren();
+
+      // Si el total es 0 o no hay categorías, forzar el estado gris inmediatamente
+      if (total === 0) {
+        const vacio = document.createElement("li");
+        vacio.className = "categoria-producto-vacia";
+        vacio.textContent = "No hay productos para mostrar";
+        listaCategorias.appendChild(vacio);
+
+        // Forzar colores grises en la dona al vaciarse
+        graficoPPC.data.labels = ["Sin productos"];
+        graficoPPC.data.datasets[0].data = [1];
+        graficoPPC.data.datasets[0].backgroundColor = [
+          "rgba(100, 116, 139, 0.75)",
+        ];
+        graficoPPC.data.datasets[0].borderColor = ["rgba(100, 116, 139, 1)"];
+        graficoPPC.update();
+        return;
+      }
+
+      // Generar colores dinámicos frescos solo si hay datos
+      const coloresDinamicos = actualizacion.labels.map(() =>
+        generarColorAleatorio()
+      );
+      const bgColors = coloresDinamicos.map((c) => c.bg);
+      const borderColors = coloresDinamicos.map((c) => c.border);
+
+      graficoPPC.data.labels = actualizacion.labels;
+      graficoPPC.data.datasets[0].data = actualizacion.data;
+      graficoPPC.data.datasets[0].backgroundColor = bgColors;
+      graficoPPC.data.datasets[0].borderColor = borderColors;
+      graficoPPC.update();
+
+      actualizacion.labels.forEach((categoria, indice) => {
+        const fila = document.createElement("li");
+        fila.className = "categoria-producto-fila";
+
+        const nombre = document.createElement("span");
+        nombre.className = "categoria-producto-nombre";
+
+        const color = document.createElement("span");
+        color.className = "categoria-producto-color";
+        // Aplica el color correspondiente de manera sincronizada
+        color.style.backgroundColor = borderColors[indice];
+        color.setAttribute("aria-hidden", "true");
+
+        const texto = document.createElement("span");
+        texto.textContent = categoria;
+        nombre.append(color, texto);
+
+        const porcentaje = document.createElement("span");
+        porcentaje.className = "categoria-producto-porcentaje";
+        const valorActual = actualizacion.data[indice];
+        porcentaje.textContent = `${((valorActual / total) * 100).toFixed(1)}%`;
+
+        fila.append(nombre, porcentaje);
+        listaCategorias.appendChild(fila);
+      });
+    }
+
+  window.addEventListener("storage", actualizarListaYGrafica);
+  window.addEventListener("productosActualizados", actualizarListaYGrafica);
+  
+  actualizarListaYGrafica();
 });
