@@ -14,7 +14,7 @@
 <body data-produccion-url="{% url 'produccion' %}">
 <div class="contenedor">
     <h1 class="tit">Nueva orden de producción</h1>
-    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+    <button type="button" id="toggleBtn" aria-controls="navlateral" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto" style="background: transparent; color:var(--colorseleccion);;"></i>
     </button>
     <aside id="navlateral" class="navlateral">
@@ -46,6 +46,10 @@
                 <label for="orden-producto">Producto *</label>
                 <input type="text" id="orden-producto" placeholder="Nombre del producto">
 
+                <label for="orden-materia-prima">Materia prima *</label>
+                <input type="text" id="orden-materia-prima" maxlength="255" required
+                       placeholder="Ingredientes o materiales utilizados">
+
                 <label for="orden-cantidad">Cantidad a producir *</label>
                 <input type="number" id="orden-cantidad" min="1" step="1" placeholder="1">
 
@@ -57,8 +61,8 @@
 
                 <label for="orden-estado">Estado inicial</label>
                 <select id="orden-estado">
-                    <option value="Pendiente">Pendiente</option>
                     <option value="En proceso">En proceso</option>
+                    <option value="Terminado">Terminado</option>
                 </select>
             </div>
 

@@ -3591,6 +3591,124 @@
   color: #000;
 }
 
+.historial-tabla td.acciones-factura,
+.historial-produccion-tabla td.acciones-factura {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.historial-tabla .acciones-factura .btn-accion,
+.historial-produccion-tabla .acciones-factura .btn-accion {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: var(--colorazul);
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0 5px;
+  padding: 5px;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.historial-tabla .acciones-factura .btn-accion:hover,
+.historial-produccion-tabla .acciones-factura .btn-accion:hover {
+  background: transparent;
+  box-shadow: none;
+  color: var(--colornegro);
+  transform: scale(1.12);
+}
+
+.historial-tabla .acciones-factura .btn-accion:focus-visible,
+.historial-produccion-tabla .acciones-factura .btn-accion:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--colorazul);
+  outline-offset: 2px;
+}
+
+.historial-tabla .acciones-factura .btn-eliminar-factura,
+.historial-produccion-tabla .acciones-factura .btn-eliminar-factura {
+  color: #cf1f1f;
+}
+
+.historial-tabla .acciones-factura .btn-pdf-factura,
+.historial-produccion-tabla .acciones-factura .btn-pdf-factura {
+  color: #b91c1c;
+}
+
+.modal-factura[hidden] {
+  display: none;
+}
+
+.modal-factura {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.contenido-modal-factura {
+  width: min(720px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  padding: 24px;
+  border-radius: 10px;
+  background: #fff;
+  color: #202124;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+
+.encabezado-modal-factura {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.encabezado-modal-factura h2 {
+  margin: 0;
+}
+
+.btn-cerrar-modal-factura {
+  border: 0;
+  padding: 6px;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.btn-cerrar-modal-factura:hover {
+  background: transparent;
+  color: #111827;
+}
+
+#detalle-factura table,
+#detalle-orden table {
+  width: 100%;
+  margin: 12px 0;
+  border-collapse: collapse;
+}
+
+#detalle-factura th,
+#detalle-factura td,
+#detalle-orden th,
+#detalle-orden td {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  text-align: left;
+}
+
+#detalle-factura th,
+#detalle-orden th {
+  background: #f3f4f6;
+}
+
 .eye {
   color: var(--colorazul);
 }
@@ -3716,7 +3834,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  text-align: justify;
+  /* text-align: justify; */
   border: 1px solid #cccccc75;
   border-radius: 20px;
   padding: 10px;
@@ -6278,6 +6396,101 @@ body.activee .kpi-detalles span {
 
 body.activee .kpi-detalles h3 {
   color: #fff;
+}
+
+.estado-terminado {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.panel-estadisticas-produccion {
+  margin: 24px 0;
+  padding: 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 12px #00000012;
+}
+
+.panel-estadisticas-produccion h2 {
+  margin: 0 0 16px;
+  font-size: 1.25rem;
+}
+
+.resumen-produccion-estadisticas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.resumen-produccion-estadisticas article {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f3f6fb;
+}
+
+.resumen-produccion-estadisticas span {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.resumen-produccion-estadisticas strong {
+  color: var(--colorazul);
+  font-size: 1.3rem;
+  overflow-wrap: anywhere;
+}
+
+#detalle-orden {
+  overflow-x: auto;
+}
+
+body.activee .panel-estadisticas-produccion {
+  border-color: #000;
+  background: #202124;
+  color: #fff;
+}
+
+body.activee .resumen-produccion-estadisticas article {
+  background: #303238;
+}
+
+body.activee .resumen-produccion-estadisticas span {
+  color: #d1d5db;
+}
+
+@media (max-width: 760px) {
+  .resumen-produccion-estadisticas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .resumen-produccion-estadisticas {
+    grid-template-columns: 1fr;
+  }
+}
+
+#toggleBtn,
+#toggleBtn2 {
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media screen and (min-width: 1001px) {
+  .pagina-configuracion #toggleBtn2 {
+    top: -11.6px;
+  }
+}
+
+.navlateral,
+.nav-Config {
+  -webkit-overflow-scrolling: touch;
 }
 
 body.activee .estadistica-rango {

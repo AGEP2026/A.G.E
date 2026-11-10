@@ -13,7 +13,7 @@
 <body>
 <div class="contenedor">
   <h1 class="tit">Configuración</h1>
-    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+    <button type="button" id="toggleBtn" aria-controls="navlateral" aria-expanded="false">
       <i class="fa-solid fa-bars menuoculto" style="background: transparent; color:var(--colorseleccion);"></i>
     </button>
     <aside id="navlateral" class="navlateral">
@@ -35,7 +35,7 @@
         </nav>
       </div>
     </aside>
-  <button id="toggleBtn2" onfocus="abri2()" onblur="abri2()">
+  <button type="button" id="toggleBtn2" aria-controls="nav-Config" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto2" style="background: transparent; color:var(--colorseleccion);"></i>
     </button>
     <div class="nav-Config" id="nav-Config">
@@ -53,21 +53,27 @@
   <section class="contenido-config">
     <h1>Perfil de la empresa</h1>
     
-      <form>
+      {% if messages %}
+        {% for message in messages %}
+          <p role="status">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
         <label for="nombre-empresa">Nombre de la empresa</label>
-        <input type="text" id="nombre-empresa" name="nombre-empresa" placeholder="Nombre Empresa" required>
+        <input type="text" id="nombre-empresa" name="nombre-empresa" value="{{ perfil.nombre }}" placeholder="Nombre Empresa" required>
       
         <label for="rnc">RNC</label>
-        <input type="text" id="rnc" name="rnc" placeholder="402-3957658-6" maxlength="11" pattern="\d{9}|\d{11}" title="Debe ingresar 9 dígitos (RNC)" required>
+        <input type="text" id="rnc" name="rnc" value="{{ perfil.rnc }}" placeholder="402-3957658-6" maxlength="20" required>
       
         <label for="telefono">Teléfono</label>
-        <input type="tel" id="telefono" name="telefono" placeholder="1 + (809)-123-4567" title="Ingrese un número de teléfono" required>
+        <input type="tel" id="telefono" name="telefono" value="{{ perfil.telefono }}" placeholder="1 + (809)-123-4567" title="Ingrese un número de teléfono">
       
         <label for="correo">Correo electrónico</label>
-        <input type="email" id="correo" name="email" placeholder="adgenempress@gmail.com" title="Ingrese una dirección de correo electrónico" required>
+        <input type="email" id="correo" name="email" value="{{ perfil.correo }}" placeholder="adgenempress@gmail.com" title="Ingrese una dirección de correo electrónico" required>
       
       <label for="direccion">Dirección</label>
-      <input type="text" id="direccion" name="direccion" placeholder="Av. Principal #123, Santo Domingo, RD" title="Ingrese la dirección de la empresa" required>
+      <input type="text" id="direccion" name="direccion" value="{{ perfil.direccion }}" placeholder="Av. Principal #123, Santo Domingo, RD" title="Ingrese la dirección de la empresa" required>
     
       <button type="submit" class="resbutton">Guardar cambios</button>
     </form>

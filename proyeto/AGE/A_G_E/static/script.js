@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // --------------------------------------------- FACTURACION ---------------------------------------------------------------------
 // FACTURACION: crea facturas, calcula sus totales y las conserva en el navegador.
 document.addEventListener('DOMContentLoaded', function () {
+    if (document.querySelector('[data-persisted-invoices="true"]')) return;
     const FACTURAS_KEY = 'facturasAGE';
     const IVA = 0.16;
     // Formato monetario de República Dominicana.
@@ -668,7 +669,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const sinResultados = document.getElementById('sin-resultados-produccion');
         const filtradas = ordenes.filter(orden => {
             const productosOrden = (orden.items || []).map(item => item.producto).join(' ');
-            return `${orden.numero} ${orden.responsable} ${productosOrden}`.toLowerCase().includes(busqueda)
+            const materiasPrimas = (orden.items || []).map(item => item.materiaPrima || '').join(' ');
+            return `${orden.numero} ${orden.responsable} ${productosOrden} ${materiasPrimas}`.toLowerCase().includes(busqueda)
                 && (!estado || orden.estado === estado)
                 && (!fecha || orden.fecha >= fecha);
         });
@@ -681,7 +683,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const celdas = [
                 orden.numero,
-                (orden.items || []).map(item => `${item.producto} (x${item.cantidad})`).join(', '),
+                (orden.items || []).map(item =>
+                    `${item.producto} (x${item.cantidad})${item.materiaPrima ? ` — Materia prima: ${item.materiaPrima}` : ''}`
+                ).join(', '),
                 orden.fecha ? new Date(`${orden.fecha}T00:00:00`).toLocaleDateString('es-DO') : '',
                 orden.responsable,
                 formatoMoneda.format(Number(orden.costoTotal) || 0)
@@ -697,6 +701,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const claseEstado = {
                 'Pendiente': 'estado-pendiente',
                 'En proceso': 'estado-proceso',
+                'Terminado': 'estado-terminado',
                 'Completada': 'estado-completada',
                 'Anulada': 'estado-anulada'
             }[orden.estado] || 'estado-pendiente';
@@ -706,23 +711,25 @@ document.addEventListener('DOMContentLoaded', function () {
             fila.appendChild(estadoCelda);
 
             const acciones = document.createElement('td');
+            acciones.className = 'acciones-factura';
             const siguientesAcciones = [
-                ['ver', 'Ver orden', 'fa-regular fa-eye'],
-                ['cambiar-estado', 'Avanzar estado', 'fa-solid fa-circle-check'],
-                ['pdf', 'Descargar orden en PDF', 'fa-regular fa-file-pdf'],
-                ['eliminar', 'Eliminar orden', 'fa-regular fa-trash-can']
+                ['ver', 'Ver orden', 'fa-regular fa-eye', 'btn-ver-factura'],
+                ['cambiar-estado', 'Cambiar estado', 'fa-solid fa-circle-check', 'btn-estado-factura'],
+                ['pdf', 'Descargar orden en PDF', 'fa-regular fa-file-pdf', 'btn-pdf-factura'],
+                ['eliminar', 'Eliminar orden', 'fa-regular fa-trash-can', 'btn-eliminar-factura']
             ];
-            siguientesAcciones.forEach(([accion, titulo, icono]) => {
+            siguientesAcciones.forEach(([accion, titulo, icono, clase]) => {
                 if (accion === 'cambiar-estado' && orden.estado === 'Anulada') return;
-                const enlace = document.createElement('a');
-                enlace.href = '#';
-                enlace.dataset.accion = accion;
-                enlace.title = titulo;
-                enlace.setAttribute('aria-label', titulo);
+                const boton = document.createElement('button');
+                boton.type = 'button';
+                boton.className = `btn-accion ${clase}`;
+                boton.dataset.accion = accion;
+                boton.title = titulo;
+                boton.setAttribute('aria-label', titulo);
                 const elementoIcono = document.createElement('i');
                 elementoIcono.className = icono;
-                enlace.appendChild(elementoIcono);
-                acciones.appendChild(enlace);
+                boton.appendChild(elementoIcono);
+                acciones.appendChild(boton);
             });
             fila.appendChild(acciones);
             historial.appendChild(fila);
@@ -740,35 +747,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const { jsPDF } = window.jspdf;
         const documento = new jsPDF();
-        documento.setFontSize(20);
-        documento.text('ORDEN DE PRODUCCION', 20, 25);
-        documento.setFontSize(11);
-        documento.text(`Numero: ${orden.numero}`, 20, 38);
-        documento.text(`Fecha: ${new Date(`${orden.fecha}T00:00:00`).toLocaleDateString('es-DO')}`, 20, 46);
-        documento.text(`Responsable: ${orden.responsable}`, 20, 54);
-        documento.text(`Estado: ${orden.estado}`, 20, 62);
-        let posicionY = 78;
-        documento.setFont('helvetica', 'bold');
-        documento.text('Producto', 20, posicionY);
-        documento.text('Cantidad', 100, posicionY);
-        documento.text('Horas', 130, posicionY);
-        documento.text('Costo', 160, posicionY);
-        documento.setFont('helvetica', 'normal');
-        posicionY += 9;
-        (orden.items || []).forEach(item => {
-            if (posicionY > 270) {
+        const anchoTexto = documento.internal.pageSize.getWidth() - 40;
+        const altoPagina = documento.internal.pageSize.getHeight();
+        let posicionY = 20;
+
+        function escribirLinea(texto, negrita = false, tamano = 10, espacio = 1) {
+            documento.setFont('helvetica', negrita ? 'bold' : 'normal');
+            documento.setFontSize(tamano);
+            const lineas = documento.splitTextToSize(String(texto), anchoTexto);
+            if (posicionY + lineas.length * 6 > altoPagina - 20) {
                 documento.addPage();
                 posicionY = 20;
             }
-            documento.text(String(item.producto).slice(0, 38), 20, posicionY);
-            documento.text(String(item.cantidad), 100, posicionY);
-            documento.text(String(item.horas), 130, posicionY);
-            documento.text(formatoMoneda.format(item.total), 160, posicionY);
-            posicionY += 8;
+            documento.text(lineas, 20, posicionY);
+            posicionY += lineas.length * 6 + espacio;
+        }
+
+        escribirLinea('A.G.E. | PRODUCCIÓN', true, 18, 3);
+        escribirLinea(`ORDEN DE PRODUCCIÓN ${orden.numero}`, true, 14, 2);
+        escribirLinea(`Fecha: ${new Date(`${orden.fecha}T00:00:00`).toLocaleDateString('es-DO')}`);
+        escribirLinea(`Responsable: ${orden.responsable}`);
+        escribirLinea(`Estado: ${orden.estado}`);
+        posicionY += 3;
+        escribirLinea('DETALLE DE PRODUCCIÓN', true, 11, 2);
+        (orden.items || []).forEach(item => {
+            escribirLinea(`${item.producto} | Cantidad: ${item.cantidad}`, true, 10, 0);
+            if (item.materiaPrima) escribirLinea(`Materia prima: ${item.materiaPrima}`);
+            escribirLinea(`Horas estimadas: ${item.horas} | Costo: ${formatoMoneda.format(item.total)}`, false, 10, 3);
         });
-        documento.setFont('helvetica', 'bold');
-        documento.text(`Horas estimadas: ${orden.horasTotal}`, 110, posicionY + 8);
-        documento.text(`Costo total: ${formatoMoneda.format(orden.costoTotal)}`, 110, posicionY + 16);
+        posicionY += 3;
+        escribirLinea(`Horas estimadas: ${orden.horasTotal}`, true);
+        escribirLinea(`COSTO ESTIMADO TOTAL: ${formatoMoneda.format(orden.costoTotal)}`, true, 12);
         documento.save(`orden-${orden.numero}.pdf`);
     }
 
@@ -784,33 +793,111 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const { jsPDF } = window.jspdf;
         const documento = new jsPDF();
-        documento.setFontSize(18);
-        documento.text('ORDENES DE PRODUCCION', 20, 22);
-        documento.setFontSize(10);
-        let posicionY = 34;
-        ordenes.forEach((orden, indice) => {
-            if (posicionY > 265) {
+        const anchoTexto = documento.internal.pageSize.getWidth() - 40;
+        const altoPagina = documento.internal.pageSize.getHeight();
+        let posicionY = 20;
+
+        function escribirLinea(texto, negrita = false, espacio = 1) {
+            documento.setFont('helvetica', negrita ? 'bold' : 'normal');
+            documento.setFontSize(10);
+            const lineas = documento.splitTextToSize(String(texto), anchoTexto);
+            if (posicionY + lineas.length * 6 > altoPagina - 20) {
                 documento.addPage();
                 posicionY = 20;
             }
-            const productosOrden = (orden.items || []).map(item =>
-                `${item.producto} x${item.cantidad}`
-            ).join(', ');
-            documento.setFont('helvetica', 'bold');
-            documento.text(`${orden.numero} - ${orden.estado}`, 20, posicionY);
-            documento.setFont('helvetica', 'normal');
-            documento.text(`Fecha: ${orden.fecha} | Responsable: ${orden.responsable}`, 20, posicionY + 6);
-            documento.text(`Productos: ${productosOrden}`.slice(0, 110), 20, posicionY + 12);
-            documento.text(
-                `Horas: ${orden.horasTotal} | Costo: ${formatoMoneda.format(Number(orden.costoTotal) || 0)}`,
-                20,
-                posicionY + 18
-            );
-            posicionY += 28;
-            if (indice < ordenes.length - 1) posicionY += 2;
+            documento.text(lineas, 20, posicionY);
+            posicionY += lineas.length * 6 + espacio;
+        }
+
+        documento.setFont('helvetica', 'bold');
+        documento.setFontSize(18);
+        documento.text('A.G.E. | REPORTE DE PRODUCCIÓN', 20, posicionY);
+        posicionY += 14;
+        ordenes.forEach(orden => {
+            if (posicionY > altoPagina - 45) {
+                documento.addPage();
+                posicionY = 20;
+            }
+            escribirLinea(`ORDEN ${orden.numero} | ${orden.estado}`, true, 0);
+            escribirLinea(`Fecha: ${orden.fecha} | Responsable: ${orden.responsable}`, false, 0);
+            (orden.items || []).forEach(item => {
+                escribirLinea(`${item.producto} x${item.cantidad}`, true, 0);
+                if (item.materiaPrima) escribirLinea(`Materia prima: ${item.materiaPrima}`, false, 0);
+            });
+            escribirLinea(`Horas: ${orden.horasTotal} | Costo: ${formatoMoneda.format(Number(orden.costoTotal) || 0)}`, false, 4);
         });
         documento.save('ordenes-produccion-age.pdf');
     }
+
+    const modalOrden = document.getElementById('modal-ver-orden');
+    const detalleOrden = document.getElementById('detalle-orden');
+
+    function mostrarDetalleOrden(orden) {
+        if (!modalOrden || !detalleOrden) {
+            alert(`Orden ${orden.numero}\nResponsable: ${orden.responsable}\nEstado: ${orden.estado}`);
+            return;
+        }
+
+        detalleOrden.textContent = '';
+        [
+            ['Orden', orden.numero],
+            ['Fecha', orden.fecha],
+            ['Responsable', orden.responsable],
+            ['Estado', orden.estado],
+            ['Horas estimadas', String(orden.horasTotal || 0)],
+            ['Costo estimado total', formatoMoneda.format(Number(orden.costoTotal) || 0)]
+        ].forEach(([etiqueta, valor]) => {
+            const linea = document.createElement('p');
+            const titulo = document.createElement('strong');
+            titulo.textContent = `${etiqueta}: `;
+            linea.append(titulo, document.createTextNode(valor || '—'));
+            detalleOrden.appendChild(linea);
+        });
+
+        const tituloItems = document.createElement('h3');
+        tituloItems.textContent = 'Productos y materia prima';
+        detalleOrden.appendChild(tituloItems);
+        const tabla = document.createElement('table');
+        const encabezado = document.createElement('tr');
+        ['Producto', 'Materia prima', 'Cantidad', 'Horas', 'Costo'].forEach(texto => {
+            const celda = document.createElement('th');
+            celda.textContent = texto;
+            encabezado.appendChild(celda);
+        });
+        const thead = document.createElement('thead');
+        thead.appendChild(encabezado);
+        tabla.appendChild(thead);
+        const tbody = document.createElement('tbody');
+        (orden.items || []).forEach(item => {
+            const fila = document.createElement('tr');
+            [
+                item.producto,
+                item.materiaPrima || '—',
+                String(item.cantidad),
+                String(item.horas || 0),
+                formatoMoneda.format(Number(item.total) || 0)
+            ].forEach(valor => {
+                const celda = document.createElement('td');
+                celda.textContent = valor;
+                fila.appendChild(celda);
+            });
+            tbody.appendChild(fila);
+        });
+        tabla.appendChild(tbody);
+        detalleOrden.appendChild(tabla);
+        modalOrden.hidden = false;
+        document.getElementById('cerrar-detalle-orden')?.focus();
+    }
+
+    document.getElementById('cerrar-detalle-orden')?.addEventListener('click', () => {
+        modalOrden.hidden = true;
+    });
+    modalOrden?.addEventListener('click', event => {
+        if (event.target === modalOrden) modalOrden.hidden = true;
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && modalOrden && !modalOrden.hidden) modalOrden.hidden = true;
+    });
 
     if (historial) {
         mostrarOrdenes();
@@ -828,10 +915,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!orden) return;
 
             if (enlace.dataset.accion === 'ver') {
-                const detalle = (orden.items || []).map(item =>
-                    `${item.producto} x${item.cantidad} — ${item.horas} h — ${formatoMoneda.format(item.total)}`
-                ).join('\n');
-                alert(`Orden ${orden.numero}\nResponsable: ${orden.responsable}\nEstado: ${orden.estado}\n\n${detalle}\n\nCosto estimado: ${formatoMoneda.format(orden.costoTotal)}`);
+                mostrarDetalleOrden(orden);
                 return;
             }
             if (enlace.dataset.accion === 'pdf') {
@@ -846,10 +930,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             if (enlace.dataset.accion === 'cambiar-estado') {
-                const estados = ['Pendiente', 'En proceso', 'Completada'];
-                orden.estado = estados[(estados.indexOf(orden.estado) + 1) % estados.length];
+                orden.estado = orden.estado === 'Terminado' || orden.estado === 'Completada'
+                    ? 'En proceso'
+                    : orden.estado === 'Pendiente' ? 'En proceso' : 'Terminado';
                 guardarOrdenes(leerOrdenes().map(item => item.id === orden.id ? orden : item));
-                registrarNotificacion('produccion', 'Estado de orden actualizado', `La orden ${orden.numero} ahora está ${orden.estado.toLowerCase()}.`);
+                registrarNotificacion('produccion', 'Estado de orden actualizado', `La orden ${orden.numero} pasó a ${orden.estado.toLowerCase()}.`);
                 mostrarOrdenes();
             }
         });
@@ -881,13 +966,14 @@ document.addEventListener('DOMContentLoaded', function () {
         lector.onload = function () {
             try {
                 const importadas = JSON.parse(lector.result);
-                const estadosValidos = ['Pendiente', 'En proceso', 'Completada', 'Anulada'];
+                const estadosValidos = ['Pendiente', 'En proceso', 'Terminado', 'Completada', 'Anulada'];
                 if (!Array.isArray(importadas) || importadas.some(orden =>
                     !orden || typeof orden.id !== 'string' || typeof orden.numero !== 'string'
                     || typeof orden.responsable !== 'string' || !Array.isArray(orden.items)
                     || !estadosValidos.includes(orden.estado)
                     || !Number.isFinite(Number(orden.costoTotal))
                     || !orden.items.every(item => item && typeof item.producto === 'string'
+                        && (item.materiaPrima === undefined || typeof item.materiaPrima === 'string')
                         && Number.isFinite(Number(item.cantidad))
                         && Number.isFinite(Number(item.total)))
                 )) {
@@ -934,6 +1020,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const entradas = {
         responsable: document.getElementById('orden-responsable'),
         producto: document.getElementById('orden-producto'),
+        materiaPrima: document.getElementById('orden-materia-prima'),
         cantidad: document.getElementById('orden-cantidad'),
         costo: document.getElementById('orden-costo-unitario'),
         horas: document.getElementById('orden-horas'),
@@ -950,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', function () {
             productos.forEach((item, indice) => {
                 const fila = document.createElement('div');
                 fila.className = 'item-factura';
-                fila.textContent = `${item.producto} x${item.cantidad} — ${item.horas} h — ${formatoMoneda.format(item.total)}`;
+                fila.textContent = `${item.producto} x${item.cantidad}${item.materiaPrima ? ` — Materia prima: ${item.materiaPrima}` : ''} — ${item.horas} h — ${formatoMoneda.format(item.total)}`;
                 const quitar = document.createElement('button');
                 quitar.type = 'button';
                 quitar.textContent = 'Quitar';
@@ -974,10 +1061,11 @@ document.addEventListener('DOMContentLoaded', function () {
         productos.length = 0;
         entradas.responsable.value = '';
         entradas.producto.value = '';
+        entradas.materiaPrima.value = '';
         entradas.cantidad.value = '';
         entradas.costo.value = '';
         entradas.horas.value = '';
-        entradas.estado.value = 'Pendiente';
+        entradas.estado.value = 'En proceso';
         mostrarItems();
         if (limpiarPreview) {
             document.getElementById('orden-preview').textContent = 'La orden aparecerá aquí después de crearla.';
@@ -987,17 +1075,19 @@ document.addEventListener('DOMContentLoaded', function () {
     botonAgregar.addEventListener('click', function (event) {
         event.preventDefault();
         const producto = entradas.producto.value.trim();
+        const materiaPrima = entradas.materiaPrima.value.trim();
         const cantidad = Number(entradas.cantidad.value);
         const costo = Number(entradas.costo.value);
         const horas = Number(entradas.horas.value) || 0;
-        if (!producto || !Number.isInteger(cantidad) || cantidad < 1
+        if (!producto || !materiaPrima || !Number.isInteger(cantidad) || cantidad < 1
             || entradas.costo.value === '' || !Number.isFinite(costo) || costo < 0
             || !Number.isFinite(horas) || horas < 0) {
-            alert('Indica un producto, una cantidad válida y un costo estimado válido.');
+            alert('Indica el producto, la materia prima, una cantidad válida y un costo estimado válido.');
             return;
         }
-        productos.push({ producto, cantidad, costoUnitario: costo, horas, total: cantidad * costo });
+        productos.push({ producto, materiaPrima, cantidad, costoUnitario: costo, horas, total: cantidad * costo });
         entradas.producto.value = '';
+        entradas.materiaPrima.value = '';
         entradas.cantidad.value = '';
         entradas.costo.value = '';
         entradas.horas.value = '';
@@ -1034,7 +1124,12 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         ultimaOrden = orden;
         guardarOrdenes([orden, ...ordenes]);
-        registrarNotificacion('produccion', 'Orden de producción creada', `Se creó la orden ${orden.numero}.`, 'fa-gears');
+        registrarNotificacion(
+            'produccion',
+            'Orden de producción creada',
+            `Se creó la orden ${orden.numero} en estado ${orden.estado.toLowerCase()} con ${productos.length} producto(s).`,
+            'fa-gears'
+        );
         document.getElementById('orden-preview').textContent =
             `Orden ${orden.numero} creada. Costo estimado: ${formatoMoneda.format(orden.costoTotal)}.`;
         alert(`Orden ${orden.numero} creada correctamente.`);
@@ -1053,38 +1148,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
     mostrarItems();
 });
-// --------------------------------------------- PRODUCCION ---------------------------------------------------------------------
-// Script para el nav
+// --------------------------------------------- NAVEGACION ---------------------------------------------------------------------
+function establecerMenuAbierto(botonId, menuId, abierto) {
+    const boton = document.getElementById(botonId);
+    const menu = document.getElementById(menuId);
+    if (!boton || !menu) return;
+
+    const siguienteEstado = typeof abierto === 'boolean'
+        ? abierto
+        : !menu.classList.contains('open');
+    menu.classList.toggle('open', siguienteEstado);
+    boton.setAttribute('aria-expanded', String(siguienteEstado));
+}
+
 function abri() {
-    const toggleBtn = document.getElementById('toggleBtn');
-    const iconoBtn = toggleBtn.querySelector('i');
-    const navlateral = document.getElementById('navlateral');
-    
-    toggleBtn.addEventListener('click', () => {
-        navlateral.classList.toggle('open');
-        
-        if (navlateral.classList.contains('open')) {
-            iconoBtn.style.color = '#fff';
-        } else {
-            iconoBtn.style.color = '#000';
-        }
-    });
-} 
+    establecerMenuAbierto('toggleBtn', 'navlateral');
+}
+
 function abri2() {
-  const toggleBtn = document.getElementById("toggleBtn2");
-  const iconoBtn = toggleBtn.querySelector("i");
-  const navConfig = document.getElementById("nav-Config");
+    establecerMenuAbierto('toggleBtn2', 'nav-Config');
+}
 
-  toggleBtn.addEventListener("click", () => {
-    navConfig.classList.toggle("open");
+document.addEventListener('DOMContentLoaded', function () {
+    const menus = [
+        { boton: document.getElementById('toggleBtn'), menu: document.getElementById('navlateral') },
+        { boton: document.getElementById('toggleBtn2'), menu: document.getElementById('nav-Config') }
+    ].filter(elementos => elementos.boton && elementos.menu);
 
-    if (navConfig.classList.contains("open")) {
-      iconoBtn.style.color = "#000";
-    } else {
-      iconoBtn.style.color = "#000";
-    }
-  });
-} 
+    menus.forEach(({ boton, menu }) => {
+        boton.addEventListener('click', function () {
+            establecerMenuAbierto(boton.id, menu.id);
+        });
+    });
+
+    document.addEventListener('click', function (evento) {
+        menus.forEach(({ boton, menu }) => {
+            if (menu.classList.contains('open')
+                && !menu.contains(evento.target)
+                && !boton.contains(evento.target)) {
+                establecerMenuAbierto(boton.id, menu.id, false);
+            }
+        });
+    });
+
+    document.addEventListener('keydown', function (evento) {
+        if (evento.key !== 'Escape') return;
+        menus.forEach(({ boton, menu }) => {
+            if (menu.classList.contains('open')) {
+                establecerMenuAbierto(boton.id, menu.id, false);
+                boton.focus();
+            }
+        });
+    });
+
+    menus.forEach(({ menu }) => {
+        menu.querySelectorAll('a').forEach(enlace => {
+            enlace.addEventListener('click', function () {
+                const boton = menus.find(elementos => elementos.menu === menu)?.boton;
+                if (boton) establecerMenuAbierto(boton.id, menu.id, false);
+            });
+        });
+    });
+});
 
 
 /*
@@ -1188,43 +1313,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
-
-// PERFIL DE EMPRESA
-// Se encarga de poner los datos de configPerfildeEmpresa automaticamente en agregarFactura por ahora solo en RNC
-// Hasta que el encargado de esa parte modifique los campos asi ya agrego los campos que faltan 
-document.addEventListener("DOMContentLoaded", function () {
-
-    const rncPerfil = document.getElementById("rnc");
-    const rncFactura = document.getElementById("cliente-rfc");
-
-    const empresa = JSON.parse(localStorage.getItem("empresaAGE")) || {};
-
-    // Perfil de empresa
-    if (rncPerfil) {
-
-        rncPerfil.value = empresa.rnc || "";
-
-        rncPerfil.closest("form").addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            empresa.rnc = rncPerfil.value.trim();
-
-            localStorage.setItem(
-                "empresaAGE",
-                JSON.stringify(empresa)
-            );
-
-            alert("Datos guardados correctamente.");
-        });
-    }
-
-    // Agregar factura
-    if (rncFactura) {
-        rncFactura.value = empresa.rnc || "";
-    }
-
-});
-
 
 // --------------------------------------------- NOTIFICACIONES -----------------------------------------------------------------
 // Aqui se guardan y muestran las notificaciones
@@ -1668,6 +1756,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // El panel de estadísticas se calcula a partir de los mismos registros guardados.
 document.addEventListener("DOMContentLoaded", function () {
+    let facturasPersistidas = window.facturasPersistidas || [];
     const ventas = document.getElementById("estadisticas-ventas-totales");
     const pedidos = document.getElementById("estadisticas-pedidos");
     const clientesNuevos = document.getElementById("estadisticas-clientes-nuevos");
@@ -1749,8 +1838,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (valor) valor.textContent = cambio.valor;
     }
 
-    function actualizarEstadisticas() {
-        const facturas = leerLista("facturasAGE").filter(factura => factura.estado !== "Anulada");
+    function actualizarEstadisticas(evento) {
+        if (evento?.detail?.facturas) facturasPersistidas = evento.detail.facturas;
+        const facturas = facturasPersistidas;
         const clientes = leerLista("clientes");
         const periodo = document.querySelector(".panel-clientes .header-clientes .tiempo")?.value || "mes";
         const fechaInicio = fechaDesdePeriodo(periodo);
@@ -1799,6 +1889,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".panel-clientes .header-clientes .tiempo")?.addEventListener("change", actualizarEstadisticas);
     document.querySelector(".tarjeta-metodos-pago .header-metodos .tiempo")?.addEventListener("change", actualizarEstadisticas);
     window.addEventListener("storage", actualizarEstadisticas);
+    window.addEventListener("facturasDbActualizadas", actualizarEstadisticas);
     actualizarEstadisticas();
 });
 
@@ -2414,7 +2505,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const rangoVG = obtenerPeriodo(document.querySelector(".tiempoVG").value);
     const rangoVPC = obtenerPeriodo(document.querySelector(".tiempoVPC").value);
     const rangoVPCA = obtenerPeriodo(document.querySelector(".tiempoVPCA").value);
-    const facturas = leerLista("facturasAGE").filter(factura => factura.estado !== "Anulada");
+    const facturas = window.facturasPersistidas || [];
     const facturasVG = facturas.filter(factura => factura.fecha >= rangoVG.inicio && factura.fecha <= rangoVG.fin);
     const facturasVPC = facturas.filter(factura => factura.fecha >= rangoVPC.inicio && factura.fecha <= rangoVPC.fin);
     const facturasVPCA = facturas.filter(factura => factura.fecha >= rangoVPCA.inicio && factura.fecha <= rangoVPCA.fin);
@@ -2576,7 +2667,7 @@ document.addEventListener("DOMContentLoaded", function () {
   [".tiempoVG", ".tiempoVPC", ".tiempoVPCA"].forEach(selector => {
     document.querySelector(selector).addEventListener("change", actualizarGraficas);
   });
-  window.addEventListener("storage", actualizarGraficas);
+  window.addEventListener("facturasDbActualizadas", actualizarGraficas);
   actualizarGraficas();
 });
 

@@ -10,11 +10,11 @@
     <link rel="icon" href="{% static 'image/Logo_A.G.E.png' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
+<body class="pagina-configuracion">
 
 <div class="contenedor"> 
     <h1 class="tit">Configuración</h1>
-    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+    <button type="button" id="toggleBtn" aria-controls="navlateral" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto" style="background: transparent; color:var(--colorseleccion);"></i>
     </button>
     <aside id="navlateral" class="navlateral">
@@ -36,7 +36,7 @@
             </nav>
         </div>
     </aside>
-    <button id="toggleBtn2" onfocus="abri2()" onblur="abri2()">
+    <button type="button" id="toggleBtn2" aria-controls="nav-Config" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto2" style="background: transparent; color:var(--colorseleccion);"></i>
     </button>
     <div class="nav-Config" id="nav-Config">

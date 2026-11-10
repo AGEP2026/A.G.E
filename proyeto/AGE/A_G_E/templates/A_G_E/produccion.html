@@ -14,7 +14,7 @@
 <body>
 <div class="contenedor">
     <h1 class="tit">Producción</h1>
-    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+    <button type="button" id="toggleBtn" aria-controls="navlateral" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto" style="background: transparent; color: #000;"></i>
     </button>
     <aside id="navlateral" class="navlateral">
@@ -55,6 +55,7 @@
                     <option value="">Todos los estados</option>
                     <option value="Pendiente">Pendiente</option>
                     <option value="En proceso">En proceso</option>
+                    <option value="Terminado">Terminado</option>
                     <option value="Completada">Completada</option>
                     <option value="Anulada">Anulada</option>
                 </select>
@@ -107,6 +108,19 @@
             </a>
         </div>
     </main>
+</div>
+<div id="modal-ver-orden" class="modal-factura" role="dialog" aria-modal="true"
+     aria-labelledby="titulo-detalle-orden" hidden>
+    <section class="contenido-modal-factura">
+        <div class="encabezado-modal-factura">
+            <h2 id="titulo-detalle-orden">Detalle de orden de producción</h2>
+            <button type="button" id="cerrar-detalle-orden" class="btn-cerrar-modal-factura"
+                    aria-label="Cerrar detalle de orden" title="Cerrar">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div id="detalle-orden"></div>
+    </section>
 </div>
 </body>
 </html>

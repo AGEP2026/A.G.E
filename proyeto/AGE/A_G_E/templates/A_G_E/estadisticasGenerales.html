@@ -14,7 +14,7 @@
 <body>
     <div class="contenedor">
     <h1 class="tit">Estadísticas Generales</h1>
-    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+    <button type="button" id="toggleBtn" aria-controls="navlateral" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto" style="background: transparent; color:var(--colorseleccion);"></i>
     </button>
     <aside id="navlateral" class="navlateral">
@@ -36,7 +36,7 @@
             </nav>
         </div>
     </aside>
-    <main class="contenido-estadisticas">
+    <main class="contenido-estadisticas" data-facturas-url="{% url 'facturas_api' %}">
         <a href="{% url 'notificaciones' %}"><i class="fa-regular fa-bell campana"></i></a>
         <div class="topbar">
             <div class="buscador">
@@ -121,6 +121,29 @@
                     <span class="cf estadistica-rango" id="estadisticas-clientes-rango"></span>
                 </div>
             </div>
+        </section>
+
+        <section class="panel-estadisticas-produccion" aria-labelledby="titulo-estadisticas-produccion">
+            <h2 id="titulo-estadisticas-produccion"><i class="fa-solid fa-gears"></i> Producción</h2>
+            <div class="resumen-produccion-estadisticas">
+                <article>
+                    <span>Órdenes registradas</span>
+                    <strong id="estadisticas-ordenes-total">0</strong>
+                </article>
+                <article>
+                    <span>En proceso</span>
+                    <strong id="estadisticas-ordenes-proceso">0</strong>
+                </article>
+                <article>
+                    <span>Terminadas</span>
+                    <strong id="estadisticas-ordenes-terminadas">0</strong>
+                </article>
+                <article>
+                    <span>Costo estimado activo</span>
+                    <strong id="estadisticas-costo-produccion">RD$ 0.00</strong>
+                </article>
+            </div>
+            <p id="estadisticas-produccion-error" class="error-estadisticas-facturas" role="alert" hidden></p>
         </section>
 
 
@@ -317,5 +340,7 @@
         </section>
     </main>
 </div>
+<script src="{% static 'estadisticas-facturas.js' %}" defer></script>
+<script src="{% static 'estadisticas-produccion.js' %}" defer></script>
 </body>
 </html>

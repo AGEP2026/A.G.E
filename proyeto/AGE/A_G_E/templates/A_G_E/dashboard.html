@@ -20,7 +20,7 @@
         <a href="{% url 'logout' %}">Cerrar Sesion</a>
     </div>
 
-    <button id="toggleBtn" onclick="abri()" onblur="abri()">
+    <button type="button" id="toggleBtn" aria-controls="navlateral" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto" style="background: transparent; color:var(--colorseleccion);"></i>
     </button>
     
@@ -46,7 +46,7 @@
     </aside>
 
     <!-- Contenido Principal del Dashboard -->
-    <main class="dashboard-main-content">
+    <main class="dashboard-main-content" data-facturas-url="{% url 'facturas_api' %}">
         
         <!-- Mensaje de Bienvenida -->
         <div class="bienvenida-banner">
@@ -59,8 +59,8 @@
             <div class="kpi-card">
                 <div class="kpi-icon blue"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                 <div class="kpi-detalles">
-                    <span>Facturas del Mes</span>
-                    <h3>$0.00</h3>
+                    <span>Facturado este mes</span>
+                    <h3 id="dashboard-facturas-mes">RD$ 0.00</h3>
                 </div>
             </div>
             <div class="kpi-card">
@@ -74,7 +74,7 @@
                 <div class="kpi-icon orange"><i class="fa-solid fa-gears"></i></div>
                 <div class="kpi-detalles">
                     <span>Órdenes Producción</span>
-                    <h3>0 activas</h3>
+                    <h3 id="dashboard-ordenes-produccion">0 activas</h3>
                 </div>
             </div>
             <div class="kpi-card">
@@ -146,5 +146,7 @@
 
     </main>
 </div>
+<script src="{% static 'estadisticas-facturas.js' %}" defer></script>
+<script src="{% static 'estadisticas-produccion.js' %}" defer></script>
 </body>
 </html>

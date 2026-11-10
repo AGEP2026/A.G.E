@@ -14,7 +14,7 @@
 <body>
 <div class="contenedor">
     <h1 class="tit">Facturación</h1>
-    <button id="toggleBtn" onfocus="abri()" onblur="abri()">
+    <button type="button" id="toggleBtn" aria-controls="navlateral" aria-expanded="false">
         <i class="fa-solid fa-bars menuoculto" style="background: transparent; color:var(--colorseleccion);"></i>
     </button>
     <aside id="navlateral" class="navlateral">
@@ -36,7 +36,9 @@
             </nav>
         </div>
      </aside>
-    <main class="historial-facturas">
+    <main class="historial-facturas" data-persisted-invoices="true"
+          data-list-url="{% url 'facturas_api' %}"
+          data-detail-url="{% url 'factura_api_detalle' factura_id=123456789 %}">
         <div class="historial-encabezado">
             <div>
                 <h2>Historial de facturas</h2>
@@ -80,23 +82,7 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="historial-body">
-                    <tr data-estado="Pagada">
-                        <td>F-0001</td><td>Cliente 1</td><td>08/08/2026</td><td>$500.00</td>
-                        <td><span class="estado estado-pagada">Pagada</span></td>
-                        <td><a href="#" title="Ver factura"><i class="fa-regular fa-eye eye"></i></a> <a href="#" title="Descargar factura"><i class="fa-solid fa-download falista"></i></a></td>
-                    </tr>
-                    <tr data-estado="Pendiente">
-                        <td>F-0002</td><td>Cliente 2</td><td>07/08/2026</td><td>$135.00</td>
-                        <td><span class="estado estado-pendiente">Pendiente</span></td>
-                        <td><a href="#" title="Ver factura"><i class="fa-regular fa-eye eye"></i></a> <a href="#" title="Descargar factura"><i class="fa-solid fa-download falista"></i></a></td>
-                    </tr>
-                    <tr data-estado="Anulada">
-                        <td>F-0003</td><td>Cliente 3</td><td>05/08/2026</td><td>$47.50</td>
-                        <td><span class="estado estado-anulada">Anulada</span></td>
-                        <td><a href="#" title="Ver factura"><i class="fa-regular fa-eye eye"></i></a> <a href="#" title="Descargar factura"><i class="fa-solid fa-download falista"></i></a></td>
-                    </tr>
-                </tbody>
+                <tbody id="historial-body"></tbody>
             </table>
             <p id="sin-resultados" class="sin-resultados" hidden>No hay facturas que coincidan con los filtros.</p>
         </div>
@@ -108,10 +94,6 @@
             <button type="button" class="btn-factura" id="imprimir-facturas" title="Descargar reporte PDF de facturas" aria-label="Descargar reporte PDF de facturas">
                 <i class="fa-regular fa-file-pdf fatodo"></i>
             </button>
-            <label class="btn-factura" for="importar-facturas" title="Importar facturas" aria-label="Importar facturas">
-                <i class="fa-solid fa-file-import fatodo"></i>
-            </label>
-            <input type="file" id="importar-facturas" accept="application/json,.json" hidden>
             <button class="btn-factura">
                 <a href="{% url 'agregar_factura' %}" title="Agregar una factura">
                     <i class="fa-solid fa-file-circle-plus fatodo"></i>
@@ -123,5 +105,19 @@
         </div>
     </main>
 </div>
+<div id="modal-ver-factura" class="modal-factura" role="dialog" aria-modal="true"
+     aria-labelledby="titulo-detalle-factura" hidden>
+    <section class="contenido-modal-factura">
+        <div class="encabezado-modal-factura">
+            <h2 id="titulo-detalle-factura">Detalle de factura</h2>
+            <button type="button" id="cerrar-detalle-factura" class="btn-cerrar-modal-factura"
+                    aria-label="Cerrar detalle de factura" title="Cerrar">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div id="detalle-factura"></div>
+    </section>
+</div>
+<script src="{% static 'facturacion.js' %}" defer></script>
 </body>
 </html>
