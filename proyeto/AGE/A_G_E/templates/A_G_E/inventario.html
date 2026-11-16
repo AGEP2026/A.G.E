@@ -37,7 +37,7 @@
             </nav>
         </div>
     </aside>
-    <main class="contenido-inventario">
+    <main class="contenido-inventario" data-facturas-url="{% url 'facturas_api' %}">
         <a href="{% url 'notificaciones' %}"><i class="fa-regular fa-bell campanainv"></i></a>
         <div class="topbar">
             <div class="buscador-inv">
@@ -144,6 +144,7 @@
         <section class="seccion-graficos">
             <div class="graficoES">
                 <h2>Entradas y Salidas del Inventario</h2>
+                <p id="error-grafico-inventario" class="error-estadisticas-facturas" role="alert" hidden></p>
                 <select class="tiempoES">
                     <option value="dia">Este día</option>
                     <option value="semana">Esta semana</option>

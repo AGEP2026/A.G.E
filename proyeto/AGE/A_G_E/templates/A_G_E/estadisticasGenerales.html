@@ -79,11 +79,11 @@
                 <div class="card-header-ES">
                     <p>Ganancias Netas</p>
                     <div class="body">
-                        <p>No disponible</p>
+                        <p id="estadisticas-ganancias-totales">RD$ 0.00</p>
                     </div>
                 </div>
                 <div class="stats">
-                    <span class="cf">Falta registrar costos</span>
+                    <span class="cf estadistica-variacion" id="estadisticas-ganancias-periodo"><i class="fa-solid fa-minus" aria-hidden="true"></i><span>0%</span></span>
                     <span class="cf estadistica-rango" id="estadisticas-ganancias-rango"></span>
                 </div>
             </div>
@@ -161,7 +161,7 @@
 
                 <ul class="ES">
                     <li class="entrada">Ventas</li>
-                    <li class="salida">Ganancias</li>
+                    <li class="salida">Ganancias netas</li>
                 </ul>
                 <div class="contenedor-grafica">
                     <canvas id="graficoVG"></canvas>
@@ -178,8 +178,14 @@
                     <option value="año">Este año</option>
                 </select>
 
-                <div class="contenedor-grafica">
-                    <canvas id="graficoVPC"></canvas>
+                <div class="contenido-grafica">
+                    <div class="contenedor-grafica">
+                        <canvas id="graficoVPC"></canvas>
+                    </div>
+                    <div class="informacion-grafica">
+                        <ul id="informacionVPC" class="lista-info-grafica"></ul>
+                        <p class="mensaje-grafica-vacia" hidden>No hay ventas para mostrar</p>
+                    </div>
                 </div>
             </div>
 
@@ -193,8 +199,14 @@
                     <option value="año">Este año</option>
                 </select>
 
-                <div class="contenedor-grafica">
-                    <canvas id="graficoVPCA"></canvas>
+                <div class="contenido-grafica">
+                    <div class="contenedor-grafica">
+                        <canvas id="graficoVPCA"></canvas>
+                    </div>
+                    <div class="informacion-grafica">
+                        <ul id="informacionVPCA" class="lista-info-grafica"></ul>
+                        <p class="mensaje-grafica-vacia" hidden>No hay productos para mostrar</p>
+                    </div>
                 </div>
             </div>
             
