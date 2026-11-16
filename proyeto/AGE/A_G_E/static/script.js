@@ -1,6 +1,8 @@
 
 // ESTOS SON LOS SCRIPTS DEL LOGIN, REGISTRO Y RECUPERACION DE CONTRASEÑA, SOLO COMPRUEBAN QUE SE INTRODUJERON DATOS
 // Y TAMBIEN GUARDAN EL NOMBRE DEL USUARIO EN EL LOCALSTORAGE PARA MOSTRARLO EN EL DASHBOARD
+
+
 document.addEventListener('DOMContentLoaded', function () {
 	const loginForm = document.getElementById('login-form');
 	const registerForm = document.getElementById('register-form');
@@ -410,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tasaInteres = document.getElementById('tasa-interes');
 
     function cargarProductos() {
-        // El inventario todavía no es obligatorio; si existe un catálogo, se carga aquí.
+        
         let productos = [];
         try {
             productos = JSON.parse(localStorage.getItem('productosAGE')) || [];
@@ -521,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const metodoPago = document.getElementById('fact-metodo-pago').value;
         const estado = document.getElementById('fact-estado').value;
 
-        // Por ahora se permite guardar la factura sin productos del inventario.
+        // Por ahora se permite guardar la factura sin productos del inventario
         if (!cliente || !rnc || !metodoPago) {
             alert('Completa los datos del cliente y selecciona un método de pago.');
             return;
@@ -1754,10 +1756,66 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function crearCostosProduccionPorProducto(ordenes) {
+    const costos = new Map();
+    ordenes.filter(orden => orden && orden.estado !== "Anulada").forEach(orden => {
+        const items = (Array.isArray(orden.items) ? orden.items : []).map(item => {
+            const nombre = String(item.producto || "").trim().normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            const cantidad = Number(item.cantidad);
+            const costoUnitario = Number(item.costoUnitario);
+            const costoTotal = Number(item.total);
+            const tieneCosto = (Number.isFinite(costoTotal) && costoTotal >= 0)
+                || (Number.isFinite(costoUnitario) && costoUnitario >= 0);
+            return {
+                nombre,
+                cantidad,
+                total: Number.isFinite(costoTotal) && costoTotal >= 0
+                    ? costoTotal
+                    : cantidad * costoUnitario,
+                tieneCosto
+            };
+        }).filter(item => item.nombre && Number.isFinite(item.cantidad) && item.cantidad > 0);
+        const itemsSinCosto = items.filter(item => !item.tieneCosto);
+        const cantidadSinCosto = itemsSinCosto.reduce((suma, item) => suma + item.cantidad, 0);
+        const costoOrden = Number(orden.costoTotal);
+        const costoItemsConocido = items
+            .filter(item => item.tieneCosto)
+            .reduce((suma, item) => suma + item.total, 0);
+        const costoRestante = Number.isFinite(costoOrden) && costoOrden > costoItemsConocido
+            ? costoOrden - costoItemsConocido
+            : 0;
+
+        items.forEach(item => {
+            const total = item.tieneCosto
+                ? item.total
+                : cantidadSinCosto > 0 ? costoRestante * item.cantidad / cantidadSinCosto : 0;
+            if (!Number.isFinite(total) || total < 0) return;
+            const acumulado = costos.get(item.nombre) || { cantidad: 0, total: 0 };
+            acumulado.cantidad += item.cantidad;
+            acumulado.total += total;
+            costos.set(item.nombre, acumulado);
+        });
+    });
+    return costos;
+}
+
+function costoProduccionDeFactura(factura, costos) {
+    return (Array.isArray(factura.items) ? factura.items : []).reduce((suma, item) => {
+        const nombre = String(item.producto || "").trim().normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const cantidadVendida = Number(item.cantidad);
+        const costoProducto = costos.get(nombre);
+        if (!costoProducto || !Number.isFinite(cantidadVendida) || cantidadVendida <= 0) return suma;
+        return suma + cantidadVendida * (costoProducto.total / costoProducto.cantidad);
+    }, 0);
+}
+
 // El panel de estadísticas se calcula a partir de los mismos registros guardados.
 document.addEventListener("DOMContentLoaded", function () {
     let facturasPersistidas = window.facturasPersistidas || [];
     const ventas = document.getElementById("estadisticas-ventas-totales");
+    const ganancias = document.getElementById("estadisticas-ganancias-totales");
     const pedidos = document.getElementById("estadisticas-pedidos");
     const clientesNuevos = document.getElementById("estadisticas-clientes-nuevos");
     const clientesTotales = document.getElementById("estadisticas-clientes-totales");
@@ -1770,7 +1828,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("estadisticas-pedidos-rango"),
         document.getElementById("estadisticas-clientes-rango")
     ];
-    if (!ventas && !pedidos && !clientesNuevos && !clientesTotales) return;
+    if (!ventas && !ganancias && !pedidos && !clientesNuevos && !clientesTotales) return;
 
     function leerLista(clave) {
         try {
@@ -1827,6 +1885,21 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
+    function porcentajeCambioGanancias(actual, anterior) {
+        if (anterior === 0) {
+            return {
+                valor: actual === 0 ? "0%" : "Nuevo",
+                estado: actual > 0 ? "subio" : actual < 0 ? "bajo" : "igual"
+            };
+        }
+
+        const porcentaje = Math.round((actual - anterior) / Math.abs(anterior) * 1000) / 10;
+        return {
+            valor: porcentaje > 0 ? `+${porcentaje}%` : `${porcentaje}%`,
+            estado: porcentaje > 0 ? "subio" : porcentaje < 0 ? "bajo" : "igual"
+        };
+    }
+
     function mostrarCambio(id, cambio) {
         const elemento = document.getElementById(id);
         if (!elemento) return;
@@ -1855,12 +1928,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const rangos = obtenerRangosMensuales();
         const facturasActuales = facturas.filter(factura => factura.fecha >= rangos.actualDesde && factura.fecha <= rangos.actualHasta);
         const facturasAnteriores = facturas.filter(factura => factura.fecha >= rangos.anteriorDesde && factura.fecha <= rangos.anteriorHasta);
+        const costosProduccion = crearCostosProduccionPorProducto(leerLista("ordenesProduccionAGE"));
         const clientesActuales = clientes.filter(cliente => cliente.fechaRegistro >= rangos.actualDesde && cliente.fechaRegistro <= rangos.actualHasta);
         const clientesAnteriores = clientes.filter(cliente => cliente.fechaRegistro >= rangos.anteriorDesde && cliente.fechaRegistro <= rangos.anteriorHasta);
         const ventasActuales = facturasActuales.reduce((suma, factura) => suma + (Number(factura.total) || 0), 0);
         const ventasAnteriores = facturasAnteriores.reduce((suma, factura) => suma + (Number(factura.total) || 0), 0);
+        const costoProduccionTotal = facturas.reduce((suma, factura) =>
+            suma + costoProduccionDeFactura(factura, costosProduccion), 0);
+        const costoProduccionActual = facturasActuales.reduce((suma, factura) =>
+            suma + costoProduccionDeFactura(factura, costosProduccion), 0);
+        const costoProduccionAnterior = facturasAnteriores.reduce((suma, factura) =>
+            suma + costoProduccionDeFactura(factura, costosProduccion), 0);
+        const gananciasActuales = ventasActuales - costoProduccionActual;
+        const gananciasAnteriores = ventasAnteriores - costoProduccionAnterior;
 
         if (ventas) ventas.textContent = formatoMoneda.format(facturas.reduce((suma, factura) => suma + (Number(factura.total) || 0), 0));
+        if (ganancias) {
+            const ventasTotales = facturas.reduce((suma, factura) => suma + (Number(factura.total) || 0), 0);
+            ganancias.textContent = formatoMoneda.format(ventasTotales - costoProduccionTotal);
+        }
         if (pedidos) pedidos.textContent = String(facturas.length);
         if (clientesNuevos) clientesNuevos.textContent = String(nuevos);
         if (clientesTotales) clientesTotales.textContent = String(clientes.length);
@@ -1868,6 +1954,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (clientesPanelNuevos) clientesPanelNuevos.textContent = String(nuevos);
         if (clientesInactivos) clientesInactivos.textContent = String(inactivos);
         mostrarCambio("estadisticas-ventas-periodo", porcentajeCambio(ventasActuales, ventasAnteriores));
+        mostrarCambio("estadisticas-ganancias-periodo", porcentajeCambioGanancias(gananciasActuales, gananciasAnteriores));
         mostrarCambio("estadisticas-pedidos-periodo", porcentajeCambio(facturasActuales.length, facturasAnteriores.length));
         mostrarCambio("estadisticas-clientes-periodo", porcentajeCambio(clientesActuales.length, clientesAnteriores.length));
         rangosTarjetas.forEach(elemento => {
@@ -1894,8 +1981,26 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // --------------------------------------------- INVENTARIO ---------------------------------------------------------------------
+const INVENTARIO_MOVIMIENTOS_KEY = 'movimientosInventarioAGE';
+
+function registrarMovimientoInventario(tipo, cantidad) {
+    if (!Number.isFinite(cantidad) || cantidad <= 0) return;
+    const movimientos = JSON.parse(localStorage.getItem(INVENTARIO_MOVIMIENTOS_KEY) || '[]');
+    if (!Array.isArray(movimientos)) {
+        throw new Error('El historial de movimientos de inventario no tiene un formato válido.');
+    }
+    const fecha = new Date();
+    movimientos.push({
+        tipo,
+        cantidad,
+        fecha: `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`
+    });
+    localStorage.setItem(INVENTARIO_MOVIMIENTOS_KEY, JSON.stringify(movimientos));
+    window.dispatchEvent(new Event('movimientosInventarioActualizados'));
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
-    // Referencias de la página y clave donde se guarda el catálogo.
     const PRODUCTOS_KEY = 'productosAGE';
     const formulario = document.getElementById('formAgregarProducto');
     const cuerpoInventario = document.getElementById('inventario-body');
@@ -1904,7 +2009,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const dialogoEliminar = document.getElementById('dialogo-eliminar');
     let productoPendienteEliminar = null;
 
-    // Muestra los detalles del producto en un diálogo en lugar de usar alert().
+    // Muestra los detalles del producto en un diálogo en lugar de usar dialog
     function mostrarDetalleProducto(producto) {
         if (!dialogoProducto) return;
 
@@ -2062,7 +2167,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const nuevosProductos = productoEdicion
                 ? productos.map(item => item.id === productoEdicion.id ? producto : item)
                 : [...productos, producto];
-            guardarProductos(nuevosProductos);
+            const cantidadEntrada = productoEdicion
+                ? Math.max(producto.cantidad - (Number(productoEdicion.cantidad) || 0), 0)
+                : producto.cantidad;
+            try {
+                if (cantidadEntrada > 0) registrarMovimientoInventario('entrada', cantidadEntrada);
+                guardarProductos(nuevosProductos);
+            } catch (error) {
+                alert(`No se pudo registrar el movimiento de inventario: ${error.message}`);
+                return;
+            }
             registrarNotificacion(
                 'inventario',
                 productoEdicion ? 'Producto actualizado' : 'Producto agregado',
@@ -2143,7 +2257,7 @@ document.addEventListener('DOMContentLoaded', function () {
             productoPendienteEliminar = null;
         });
 
-        // EXPORTAR INVENTARIO: descarga el catálogo actual como archivo JSON.
+        // EXPORTAR INVENTARIO: descarga el catálogo actual como archivo JSON
         document.querySelector('.btn-exportar').addEventListener('click', function (event) {
             event.preventDefault();
             const archivo = new Blob([JSON.stringify(leerProductos(), null, 2)], { type: 'application/json' });
@@ -2155,7 +2269,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrarNotificacion('inventario', 'Inventario exportado', 'El inventario fue exportado correctamente.', 'fa-download');
         });
 
-        // IMPORTAR INVENTARIO: valida un archivo JSON y combina sus productos con el catálogo.
+        // IMPORTAR INVENTARIO: valida un archivo JSON y combina sus productos con el catálogo
         document.getElementById('archivo-custom').addEventListener('change', function () {
             const archivo = this.files[0];
             if (!archivo) return;
@@ -2173,6 +2287,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (!confirm(`Se importarán ${importados.length} productos. Los códigos existentes se actualizarán. ¿Continuar?`)) return;
                     const actuales = leerProductos();
+                    let cantidadEntrada = 0;
                     importados.forEach(item => {
                         const producto = {
                             ...item,
@@ -2182,15 +2297,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             cantidad: Number(item.cantidad)
                         };
                         const indice = actuales.findIndex(actual => actual.codigo === producto.codigo);
-                        if (indice >= 0) actuales[indice] = producto;
-                        else actuales.push(producto);
+                        if (indice >= 0) {
+                            cantidadEntrada += Math.max(producto.cantidad - (Number(actuales[indice].cantidad) || 0), 0);
+                            actuales[indice] = producto;
+                        } else {
+                            cantidadEntrada += producto.cantidad;
+                            actuales.push(producto);
+                        }
                     });
+                    if (cantidadEntrada > 0) registrarMovimientoInventario('entrada', cantidadEntrada);
                     guardarProductos(actuales);
                     registrarNotificacion('inventario', 'Inventario importado', `Se importaron ${importados.length} productos correctamente.`, 'fa-upload');
                     mostrarInventario();
                     alert('Inventario importado correctamente.');
                 } catch (error) {
-                    alert('No se pudo importar el archivo. Usa un JSON exportado desde el inventario.');
+                    alert(`No se pudo importar el archivo: ${error.message}`);
                 } finally {
                     this.value = '';
                 }
@@ -2242,43 +2363,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const ctx = canvasES.getContext("2d");
   const selectorPeriodo = document.querySelector(".tiempoES");
-  const fechaActual = new Date();
-  const seriesBase = [
-    [5, 12, 8, 15, 20, 7, 14, 9, 18, 11],
-    [3, 8, 4, 10, 12, 5, 9, 6, 12, 7]
-  ];
+  const pagina = document.querySelector(".contenido-inventario[data-facturas-url]");
+  const errorGrafico = document.getElementById("error-grafico-inventario");
+  let facturas = [];
+  const aISO = fecha => `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, "0")}-${String(fecha.getDate()).padStart(2, "0")}`;
 
-  function obtenerEtiquetas(periodo) {
-    const hoy = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate());
+  function obtenerPeriodo(periodo) {
+    const hoy = new Date();
+    const fechaFin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+    let inicio = new Date(fechaFin);
+    let etiquetas;
 
-    if (periodo === "dia") return ["Hoy"];
-
-    if (periodo === "semana") {
-      const inicioSemana = new Date(hoy);
-      inicioSemana.setDate(hoy.getDate() - (hoy.getDay() + 6) % 7);
-      return Array.from({ length: 7 }, (_, indice) => {
-        const fecha = new Date(inicioSemana);
-        fecha.setDate(inicioSemana.getDate() + indice);
+    if (periodo === "dia") {
+      etiquetas = ["Hoy"];
+    } else if (periodo === "semana") {
+      inicio.setDate(inicio.getDate() - (inicio.getDay() + 6) % 7);
+      etiquetas = Array.from({ length: 7 }, (_, indice) => {
+        const fecha = new Date(inicio);
+        fecha.setDate(inicio.getDate() + indice);
         return fecha.toLocaleDateString("es-DO", { weekday: "short" });
       });
-    }
-
-    if (periodo === "año") {
-      return Array.from({ length: 12 }, (_, indice) =>
+    } else if (periodo === "año") {
+      inicio = new Date(hoy.getFullYear(), 0, 1);
+      etiquetas = Array.from({ length: 12 }, (_, indice) =>
         new Date(hoy.getFullYear(), indice, 1).toLocaleDateString("es-DO", { month: "short" })
       );
+    } else {
+      inicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+      const diasMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
+      etiquetas = Array.from({ length: diasMes }, (_, indice) => String(indice + 1));
     }
 
-    const diasDelMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
-    return Array.from({ length: diasDelMes }, (_, indice) => String(indice + 1));
+    return {
+      inicio,
+      etiquetas,
+      indiceDeFecha(fecha) {
+        if (periodo === "año") {
+          const [anio, mes] = fecha.split("-").map(Number);
+          return anio === hoy.getFullYear() ? mes - 1 : -1;
+        }
+        const fechaUTC = Date.parse(`${fecha}T00:00:00Z`);
+        const inicioUTC = Date.parse(`${aISO(inicio)}T00:00:00Z`);
+        return Math.round((fechaUTC - inicioUTC) / 86400000);
+      }
+    };
   }
 
-  function ajustarSerie(datos, cantidad) {
-    if (cantidad === 1) return [datos.reduce((total, valor) => total + valor, 0)];
-    return Array.from({ length: cantidad }, (_, indice) => {
-      const indiceBase = Math.round(indice * (datos.length - 1) / (cantidad - 1));
-      return datos[indiceBase];
-    });
+  function leerMovimientos() {
+    const movimientos = JSON.parse(localStorage.getItem(INVENTARIO_MOVIMIENTOS_KEY) || "[]");
+    if (!Array.isArray(movimientos)) {
+      throw new Error("El historial de movimientos de inventario no tiene un formato válido.");
+    }
+    return movimientos;
   }
 
   const graficoES = new Chart(ctx, {
@@ -2335,16 +2471,76 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function actualizarGraficoES() {
-    const etiquetas = obtenerEtiquetas(selectorPeriodo.value);
-    graficoES.data.labels = etiquetas;
-    graficoES.data.datasets.forEach((dataset, indice) => {
-      dataset.data = ajustarSerie(seriesBase[indice], etiquetas.length);
-    });
+    const periodo = obtenerPeriodo(selectorPeriodo.value);
+    const entradas = Array(periodo.etiquetas.length).fill(0);
+    const salidas = Array(periodo.etiquetas.length).fill(0);
+    try {
+      leerMovimientos().forEach(movimiento => {
+        if (!movimiento || movimiento.tipo !== "entrada") return;
+        const indice = periodo.indiceDeFecha(movimiento.fecha);
+        const cantidad = Number(movimiento.cantidad);
+        if (indice >= 0 && indice < entradas.length && Number.isFinite(cantidad) && cantidad > 0) {
+          entradas[indice] += cantidad;
+        }
+      });
+      facturas.forEach(factura => {
+        const indice = periodo.indiceDeFecha(factura.fecha);
+        if (indice < 0 || indice >= salidas.length) return;
+        (Array.isArray(factura.items) ? factura.items : []).forEach(item => {
+          const cantidad = Number(item.cantidad);
+          if (Number.isFinite(cantidad) && cantidad > 0) salidas[indice] += cantidad;
+        });
+      });
+      if (errorGrafico) errorGrafico.hidden = true;
+    } catch (error) {
+      if (errorGrafico) {
+        errorGrafico.textContent = `No se pudieron cargar los movimientos: ${error.message}`;
+        errorGrafico.hidden = false;
+      }
+      console.error(error);
+    }
+    graficoES.data.labels = periodo.etiquetas;
+    graficoES.data.datasets[0].data = entradas;
+    graficoES.data.datasets[1].data = salidas;
     graficoES.update();
   }
 
+  async function cargarFacturas() {
+    if (!pagina) return;
+    try {
+      const respuesta = await fetch(pagina.dataset.facturasUrl);
+      if (!respuesta.ok) throw new Error("No se pudieron cargar las facturas para las salidas del inventario.");
+      const datos = await respuesta.json();
+      if (!Array.isArray(datos.facturas)) throw new Error("La respuesta de facturas no tiene el formato esperado.");
+      facturas = datos.facturas.filter(factura => factura.estado !== "Anulada");
+      if (errorGrafico) errorGrafico.hidden = true;
+    } catch (error) {
+      if (errorGrafico) {
+        errorGrafico.textContent = error.message;
+        errorGrafico.hidden = false;
+      }
+      console.error(error);
+    }
+    actualizarGraficoES();
+  }
+
   selectorPeriodo.addEventListener("change", actualizarGraficoES);
+  window.addEventListener("movimientosInventarioActualizados", actualizarGraficoES);
+  window.addEventListener("facturasDbActualizadas", function (evento) {
+    if (Array.isArray(evento.detail?.facturas)) {
+      facturas = evento.detail.facturas.filter(factura => factura.estado !== "Anulada");
+      actualizarGraficoES();
+    }
+  });
+  window.addEventListener("storage", function (evento) {
+    if (evento.key === INVENTARIO_MOVIMIENTOS_KEY) actualizarGraficoES();
+  });
+  window.addEventListener("focus", cargarFacturas);
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) cargarFacturas();
+  });
   actualizarGraficoES();
+  cargarFacturas();
 });
 
 // document.addEventListener("DOMContentLoaded", function () {
@@ -2438,6 +2634,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const canvasVPC = document.getElementById("graficoVPC");
   const canvasVPCA = document.getElementById("graficoVPCA");
   if (!canvasVG || !canvasVPC || !canvasVPCA) return;
+  const informacionVPC = document.getElementById("informacionVPC");
+  const informacionVPCA = document.getElementById("informacionVPCA");
 
   const colores = [
     "rgba(59, 130, 246, 0.8)",
@@ -2452,6 +2650,36 @@ document.addEventListener("DOMContentLoaded", function () {
     currency: "DOP",
     maximumFractionDigits: 0
   });
+
+  function actualizarInformacionGrafica(lista, elementos, mensajeVacio) {
+    if (!lista) return;
+    const informacion = lista.parentElement;
+    const mensaje = informacion.querySelector(".mensaje-grafica-vacia");
+    const hayDatos = elementos.some(elemento => elemento.valor !== 0);
+    lista.replaceChildren();
+    elementos.forEach(elemento => {
+      const fila = document.createElement("li");
+      const etiqueta = document.createElement("span");
+      const indicador = document.createElement("span");
+      const nombre = document.createElement("span");
+      const valor = document.createElement("span");
+      etiqueta.className = "info-grafica-etiqueta";
+      indicador.className = "info-grafica-color";
+      indicador.style.backgroundColor = elemento.color;
+      nombre.className = "info-grafica-nombre";
+      nombre.textContent = elemento.nombre;
+      valor.className = "info-grafica-valor";
+      valor.textContent = formatoMoneda.format(elemento.valor);
+      etiqueta.append(indicador, nombre);
+      fila.append(etiqueta, valor);
+      lista.appendChild(fila);
+    });
+    if (mensaje) {
+      mensaje.textContent = mensajeVacio;
+      mensaje.hidden = hayDatos;
+    }
+    lista.hidden = !hayDatos;
+  }
 
   function leerLista(clave) {
     try {
@@ -2510,8 +2738,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const facturasVPC = facturas.filter(factura => factura.fecha >= rangoVPC.inicio && factura.fecha <= rangoVPC.fin);
     const facturasVPCA = facturas.filter(factura => factura.fecha >= rangoVPCA.inicio && factura.fecha <= rangoVPCA.fin);
     const ventasPorFecha = Array(rangoVG.etiquetas.length).fill(0);
+    const gananciasPorFecha = Array(rangoVG.etiquetas.length).fill(0);
     const ventasPorCanal = new Map();
     const ventasPorCategoria = new Map();
+    const costosProduccion = crearCostosProduccionPorProducto(leerLista("ordenesProduccionAGE"));
     const productos = leerLista("productosAGE");
     const categoriasPorProducto = new Map(
       productos.map(producto => [
@@ -2523,7 +2753,9 @@ document.addEventListener("DOMContentLoaded", function () {
     facturasVG.forEach(factura => {
       const fechaIndex = Number(rangoVG.claveDeFecha(factura.fecha));
       if (Number.isInteger(fechaIndex) && fechaIndex >= 0 && fechaIndex < ventasPorFecha.length) {
-        ventasPorFecha[fechaIndex] += Number(factura.total) || 0;
+        const total = Number(factura.total) || 0;
+        ventasPorFecha[fechaIndex] += total;
+        gananciasPorFecha[fechaIndex] += total - costoProduccionDeFactura(factura, costosProduccion);
       }
     });
 
@@ -2543,17 +2775,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     graficoVG.data.labels = rangoVG.etiquetas;
     graficoVG.data.datasets[0].data = ventasPorFecha;
-    graficoVG.data.datasets[1].data = Array(rangoVG.etiquetas.length).fill(0);
+    graficoVG.data.datasets[1].data = gananciasPorFecha;
     graficoVG.update();
 
-    const actualizarPastel = (grafico, datos) => {
-      grafico.data.labels = Array.from(datos.keys());
-      grafico.data.datasets[0].data = Array.from(datos.values());
-      grafico.data.datasets[0].backgroundColor = grafico.data.labels.map((_, indice) => colores[indice % colores.length]);
+    const actualizarPastel = (grafico, datos, lista, mensajeVacio) => {
+      const etiquetas = Array.from(datos.keys());
+      const valores = Array.from(datos.values());
+      const hayDatos = valores.some(valor => valor > 0);
+      const coloresGrafica = etiquetas.map((_, indice) => colores[indice % colores.length]);
+      grafico.data.labels = hayDatos ? etiquetas : [""];
+      grafico.data.datasets[0].data = hayDatos ? valores : [1];
+      grafico.data.datasets[0].backgroundColor = hayDatos ? coloresGrafica : ["#94a3b8"];
       grafico.update();
+      actualizarInformacionGrafica(lista, etiquetas.map((nombre, indice) => ({
+        nombre,
+        valor: valores[indice],
+        color: coloresGrafica[indice]
+      })), mensajeVacio);
     };
-    actualizarPastel(graficoVPC, ventasPorCanal);
-    actualizarPastel(graficoVPCA, ventasPorCategoria);
+    actualizarPastel(graficoVPC, ventasPorCanal, informacionVPC, "No hay ventas para mostrar");
+    actualizarPastel(graficoVPCA, ventasPorCategoria, informacionVPCA, "No hay productos para mostrar");
   }
 
   const graficoVG = new Chart(canvasVG.getContext("2d"), {
@@ -2570,7 +2811,7 @@ document.addEventListener("DOMContentLoaded", function () {
           borderRadius: 4
         },
         {
-          label: "Ganancias (sin costos registrados)",
+          label: "Ganancias netas",
           data: [],
           backgroundColor: "rgba(16, 185, 129, 0.75)",
           borderColor: "rgba(16, 185, 129, 1)",
@@ -2589,10 +2830,10 @@ document.addEventListener("DOMContentLoaded", function () {
           beginAtZero: true,
           ticks: {
             callback: function (valor) {
-              const hayVentas = this.chart.data.datasets.some(dataset =>
-                dataset.data.some(dato => Number(dato) > 0)
+              const hayDatos = this.chart.data.datasets.some(dataset =>
+                dataset.data.some(dato => Number(dato) !== 0)
               );
-              return hayVentas ? formatoMoneda.format(valor) : "0";
+              return hayDatos ? formatoMoneda.format(valor) : "0";
             }
           }
         }
@@ -2601,7 +2842,7 @@ document.addEventListener("DOMContentLoaded", function () {
     plugins: [{
       id: "mensajeSinVentas",
       afterDraw(chart) {
-        if (chart.data.datasets.some(dataset => dataset.data.some(valor => Number(valor) > 0))) return;
+        if (chart.data.datasets.some(dataset => dataset.data.some(valor => Number(valor) !== 0))) return;
         const { ctx, chartArea } = chart;
         if (!chartArea) return;
         ctx.save();
@@ -2616,7 +2857,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   const crearGraficoPastel = canvas => new Chart(canvas.getContext("2d"), {
-    type: "pie",
+    type: "doughnut",
     data: {
       labels: [],
       datasets: [{
@@ -2630,36 +2871,15 @@ document.addEventListener("DOMContentLoaded", function () {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          position: "bottom",
-          labels: { boxWidth: 12, padding: 12 }
-        },
+        legend: { display: false },
         tooltip: {
+          filter: contexto => Boolean(contexto.label),
           callbacks: {
             label: contexto => `${contexto.label}: ${formatoMoneda.format(contexto.raw)}`
           }
-        },
-        mensajeSinDatos: {
-          texto: "Sin ventas para este período"
         }
       }
-    },
-    plugins: [{
-      id: "mensajeSinDatos",
-      afterDraw(chart, args, opciones) {
-        const hayDatos = chart.data.datasets.some(dataset => dataset.data.some(valor => Number(valor) > 0));
-        if (hayDatos) return;
-        const { ctx, chartArea } = chart;
-        if (!chartArea) return;
-        ctx.save();
-        ctx.fillStyle = "#64748b";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.font = "14px Arial";
-        ctx.fillText(opciones.texto, (chartArea.left + chartArea.right) / 2, (chartArea.top + chartArea.bottom) / 2);
-        ctx.restore();
-      }
-    }]
+    }
   });
 
   const graficoVPC = crearGraficoPastel(canvasVPC);
@@ -2668,6 +2888,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(selector).addEventListener("change", actualizarGraficas);
   });
   window.addEventListener("facturasDbActualizadas", actualizarGraficas);
+  window.addEventListener("storage", actualizarGraficas);
   actualizarGraficas();
 });
 
