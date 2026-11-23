@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Contraseña</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'image/Logo_A.G.E.png' %}">
+</head>
+
+<body>
+
+    <div class="contenedor-principal2">
+        <div class="login">
+
+            <form method="POST" action="{% url 'nueva_contrasena' %}">
+                {% csrf_token %}
+
+                <h1>Nueva Contraseña</h1>
+
+                <p>
+                    Escribe tu nueva contraseña y confírmala
+                    para recuperar el acceso a tu cuenta.
+                </p>
+
+                <label for="password">Nueva contraseña:</label>
+                <input type="password" id="password" name="password" required>
+
+                <label for="confirm_password">Confirmar contraseña:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+
+                <button type="submit" class="botonlog">
+                    Cambiar contraseña
+                </button>
+            </form>
+
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+
+            <a href="{% url 'login' %}" class="inicioreg">
+                Regresar
+            </a>
+
+        </div>
+
+        <div class="seccion-negra2"></div>
+    </div>
+
+</body>
+
+</html>

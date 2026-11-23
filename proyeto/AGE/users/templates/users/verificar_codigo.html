@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Código</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'image/Logo_A.G.E.png' %}">
+</head>
+
+<body>
+
+    <div class="contenedor-principal2">
+        <div class="login">
+
+            <form method="POST" action="{% url 'verificar_codigo' %}">
+                {% csrf_token %}
+
+                <h1>Verificar Código</h1>
+
+                <p>
+                    Introduce el código de seis dígitos que enviamos
+                    a tu correo electrónico.
+                </p>
+
+                <label for="codigo">Código de verificación:</label>
+                <input type="text" id="codigo" name="codigo" maxlength="6" inputmode="numeric" required>
+
+                <button type="submit" class="botonlog">
+                    Verificar código
+                </button>
+            </form>
+
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+
+            <a href="{% url 'recuperar_cuenta' %}" class="inicioreg">
+                Regresar
+            </a>
+
+        </div>
+
+        <div class="seccion-negra2"></div>
+    </div>
+
+</body>
+
+</html>

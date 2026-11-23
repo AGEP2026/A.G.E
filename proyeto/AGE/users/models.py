@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 # Create your models here.
 
 class User(AbstractUser):
@@ -55,3 +56,16 @@ class UserRole(models.Model):
         return f"{self.user_id.username} - {self.role.rol_nombre}" 
 
 
+class CodigoRecuperacion(models.Model):
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="codigos_recuperacion"
+    )
+    codigo_hash = models.CharField(max_length=128)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_expiracion = models.DateTimeField()
+    utilizado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Recuperación de {self.usuario.username}"
