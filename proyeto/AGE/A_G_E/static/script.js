@@ -6,7 +6,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 	const loginForm = document.getElementById('login-form');
 	const registerForm = document.getElementById('register-form');
-	const recoveryForm = document.getElementById('recovery-form');
 	const usuarioDashboard = document.getElementById('usuario-dashboard');
 	const historialBody = document.getElementById('historial-body');
 
@@ -32,37 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	}
 // ESTOS SON LOS SCRIPTS PARA EL FORMULARIO DE RECUPERACION DE CONTRASEÑA, SIMULAN EL ENVIO DE UN CODIGO AL CORREO DEL USUARIO Y MUESTRAN MENSAJES DE ESTADO
-	if (recoveryForm) {
-		const emailInput = document.getElementById('email');
-		const sendCodeButton = document.getElementById('send-code');
-		const resendCodeLink = document.getElementById('resend-code');
-		const codeStep = document.getElementById('code-step');
-		const recoveryStatus = document.getElementById('recovery-status');
-
-		const sendCode = function (event) {
-			if (event) {
-				event.preventDefault();
-			}
-
-			if (!emailInput.value.trim()) {
-				emailInput.reportValidity();
-				return;
-			}
-
-			codeStep.hidden = false;
-			recoveryStatus.hidden = false;
-			recoveryStatus.textContent = 'Código enviado. Revisa tu correo para continuar.';
-			sendCodeButton.textContent = 'Código enviado';
-			sendCodeButton.disabled = true;
-		};
-
-		sendCodeButton.addEventListener('click', sendCode);
-		resendCodeLink.addEventListener('click', function (event) {
-			sendCode(event);
-			sendCodeButton.disabled = false;
-			sendCodeButton.textContent = 'Enviar código nuevamente';
-		});
-	}
+	
 
 	if (usuarioDashboard) {
 		const usuarioGuardado = localStorage.getItem('usuario');
